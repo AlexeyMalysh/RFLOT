@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">bachelorDegreeProject</string>
+
+    <string name="welcome">Добро пожаловать!</string>
+
+    <string name="preFlightCheckTitle">Предполетная проверка</string>
+    <string name="postFlightCheckTitle">Послеполетная проверка</string>
+    <string name="exitCheckTitle">Проверка на выход</string>
+    <string name="preFlightCheckDesc">Предполетная проверка аварийно-спасательного оборудования в самолете включает в себя контроль и обновление всего оборудования, которое может потребоваться в случае аварийной ситуации или нештатной посадки</string>
+    <string name="postFlightCheckDesc">Послеполетная проверка аварийно-спасательного оборудования в самолете включает в себя осмотр и обновление всех систем и средств, предназначенных для обеспечения безопасности пассажиров и экипажа после завершения полета</string>
+    <string name="exitCheckDesc"> Основной целью этой проверки является предотвращение случаев выноса аварийно-спасательного оборудования из самолета пассажирами, таких как спасательные жилеты, маски для кислорода и т. д</string>
+
+    <string name="selectCheckType">Выберите режим проверки</string>
+
+    <string name="loginActionButtonTitle">Войти</string>
+    <string name="startShiftActionButtonTitle">Начать смену</string>
+    <string name="positiveActionButtonTitle">Понятно</string>
+    <string name="scanRfidLogin">Или отсканируйте персональную RFID-метку</string>
+    <string name="scanRfidPlane">Или поднесите устройство к RFID-метке</string>
+
+    <string name="selectZoneHeader">Выберите зону для проверки</string>
+    <string name="authPlaneHeader">Введите ID самолёта</string>
+    <string name="loadingZone">Идет поиск…</string>
+</resources>
