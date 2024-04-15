@@ -8,6 +8,7 @@ import com.example.bachelordegreeproject.data.remote.request.AuthRequestModel
 import com.example.bachelordegreeproject.data.remote.request.StartSessionRequestModel
 import com.example.bachelordegreeproject.domain.models.AuthPerson
 import com.example.bachelordegreeproject.domain.models.Session
+import com.example.bachelordegreeproject.core.util.constants.Result
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -33,7 +34,7 @@ class AuthRepositoryImpl @Inject constructor(
             fullNameChecker = reviewerName
         )
         val result = rflotHttpService.startSession(params).map { sessionMapper.map(it) }
-        if (result.isSuccess) result.getOrNull()?.let { sessionRepository.setSession(it) }
+        if (result is Result.Success) sessionRepository.setSession(result.value)
         return result
     }
 }

@@ -10,6 +10,7 @@ import com.example.bachelordegreeproject.data.remote.response.CheckEquipResponse
 import com.example.bachelordegreeproject.data.remote.response.CheckZoneResponseModel
 import com.example.bachelordegreeproject.data.remote.response.GetZonesResponseModel
 import com.example.bachelordegreeproject.data.remote.response.SessionResponseModel
+import com.example.bachelordegreeproject.core.util.constants.Result
 
 interface RflotHttpService {
 

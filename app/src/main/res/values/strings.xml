@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">bachelorDegreeProject</string>
+    <string name="app_name">RFLOT</string>
 
     <string name="welcome">Добро пожаловать!</string>
 
@@ -21,4 +21,11 @@
     <string name="selectZoneHeader">Выберите зону для проверки</string>
     <string name="authPlaneHeader">Введите ID самолёта</string>
     <string name="loadingZone">Идет поиск…</string>
+
+    <string name="nfcReaderTagIsNullFailure">Не успешное сканиорование. Потворите снова</string>
+    <string name="nfcReaderModuleNotAvailable">NFC модуль недоступен. Обратитесь в поддержку</string>
+    <string name="nfcReaderTagEqualPrevious">Отсканированная метка равна предыдущей</string>
+
+
+    <string name="networkFailedAuth">Ошибка авторизаци. Повторите попытку позже или обратитесь в поддержку</string>
 </resources>

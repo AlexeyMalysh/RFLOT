@@ -30,13 +30,18 @@ import com.example.bachelordegreeproject.presentation.theme.Dark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SimpleOutlinedPasswordTextField() {
+fun SimpleOutlinedPasswordTextField(onTextChanged: ((String) -> Unit)? = null) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     OutlinedTextField(
         value = password,
-        onValueChange = { password = it },
+        onValueChange = {
+            password = it
+            if (onTextChanged != null) {
+                onTextChanged(it)
+            }
+        },
         shape = RoundedCornerShape(topEnd = 12.dp, bottomStart = 12.dp),
         label = {
             Text(

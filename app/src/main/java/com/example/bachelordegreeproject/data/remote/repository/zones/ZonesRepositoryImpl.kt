@@ -9,6 +9,7 @@ import com.example.bachelordegreeproject.data.remote.request.GetZonesRequestMode
 import com.example.bachelordegreeproject.domain.models.EquipByZoneInfo
 import com.example.bachelordegreeproject.domain.models.Zones
 import javax.inject.Inject
+import com.example.bachelordegreeproject.core.util.constants.Result
 
 class ZonesRepositoryImpl @Inject constructor(
     private val rflotHttpService: RflotHttpService,

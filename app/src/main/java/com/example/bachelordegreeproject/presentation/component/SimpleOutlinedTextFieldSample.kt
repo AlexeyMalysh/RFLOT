@@ -23,13 +23,18 @@ import com.example.bachelordegreeproject.presentation.theme.Dark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SimpleOutlinedTextFieldSample() {
+fun SimpleOutlinedTextFieldSample(onTextChanged: ((String) -> Unit)? = null) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var text by rememberSaveable { mutableStateOf("") }
 
     OutlinedTextField(
         value = text,
-        onValueChange = { text = it },
+        onValueChange = {
+            text = it
+            if (onTextChanged != null) {
+                onTextChanged(it)
+            }
+        },
         shape = RoundedCornerShape(topEnd = 12.dp, bottomStart = 12.dp),
         label = {
             Text(

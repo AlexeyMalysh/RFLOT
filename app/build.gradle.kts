@@ -73,6 +73,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.5")
 
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
@@ -81,6 +82,7 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.48")
     ksp("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     //Ktor
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
@@ -100,5 +102,6 @@ dependencies {
 
     //Room
     implementation ("androidx.room:room-runtime:2.6.1")
-    annotationProcessor ("androidx.room:room-compiler:2.6.1")
+    implementation( "androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 }
