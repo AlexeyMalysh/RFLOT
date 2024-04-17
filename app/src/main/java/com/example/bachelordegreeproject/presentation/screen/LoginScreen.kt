@@ -32,9 +32,9 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.bachelordegreeproject.R
 import com.example.bachelordegreeproject.R.string
-import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
-import com.example.bachelordegreeproject.domain.models.AuthPerson
+import com.example.bachelordegreeproject.core.util.constants.UIConst
+import com.example.bachelordegreeproject.core.util.constants.UiState
 import com.example.bachelordegreeproject.presentation.component.CustomToast
 import com.example.bachelordegreeproject.presentation.component.GradientButton
 import com.example.bachelordegreeproject.presentation.component.SimpleOutlinedPasswordTextField
@@ -50,7 +50,7 @@ fun LoginPage(
     modifier: Modifier = Modifier
 ) {
     val rfidInfo: RfidStatus? by viewModel.rfidStatus.observeAsState()
-    val authResult: Result<AuthPerson>? by viewModel.authResult.observeAsState()
+    val authResult: UiState? by viewModel.authResult.observeAsState()
 
     var login by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -80,18 +80,21 @@ fun LoginPage(
         }
 
         when (authResult) {
-            is Result.Success -> navController.navigate(Screen.PlaneAuthScreen.route) {
-                popUpTo(navController.graph.startDestinationId)
-                launchSingleTop = true
+            is UiState.Success -> {
+                navController.navigate(Screen.PlaneAuthScreen.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
+                viewModel.resetParams()
             }
 
-            is Result.Fail -> CustomToast(
+            is UiState.Error -> CustomToast(
                 stringResource(id = string.networkFailedAuth),
                 backgroundColor = Color.White,
                 textColor = Color.Red,
             )
 
-            is Result.Loading -> {
+            is UiState.Loading -> {
                 CustomProgress()
             }
 
@@ -141,9 +144,6 @@ fun LoginPage(
                     password = it
                 })
 
-                val gradientColor = listOf(Color(0xFF484BF1), Color(0xFF673AB7))
-                val cornerRadius = 16.dp
-
                 Spacer(modifier = Modifier.padding(10.dp))
 
                 GradientButton(
@@ -152,8 +152,8 @@ fun LoginPage(
                             login, password
                         )
                     },
-                    gradientColors = gradientColor,
-                    cornerRadius = cornerRadius,
+                    gradientColors = UIConst.gradientColor,
+                    cornerRadius = UIConst.gradientCornerRadius,
                     nameButton = stringResource(id = string.loginActionButtonTitle),
                     roundedCornerShape = RoundedCornerShape(topStart = 30.dp, bottomEnd = 30.dp)
                 )

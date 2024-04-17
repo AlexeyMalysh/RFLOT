@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bachelordegreeproject.R.string
+import com.example.bachelordegreeproject.core.util.constants.UIConst
 import com.example.bachelordegreeproject.presentation.theme.Dark
 
 @Composable
@@ -39,17 +40,16 @@ fun AdditionalCheckInfoContent(infoTitle: String, infoText: String, onClick: () 
         )
         Spacer(modifier = Modifier.height(36.dp))
 
-        val gradientColor = listOf(Color(0xFF484BF1), Color(0xFF673AB7))
-        val cornerRadius = 16.dp
-
         GradientButton(
             onClickAction = {
                 onClick()
             },
-            gradientColors = gradientColor,
-            cornerRadius = cornerRadius,
+            gradientColors = UIConst.gradientColor,
+            cornerRadius = UIConst.gradientCornerRadius,
             nameButton = stringResource(id = string.positiveActionButtonTitle),
             roundedCornerShape = RoundedCornerShape(topStart = 30.dp, bottomEnd = 30.dp)
         )
+
+        Spacer(modifier = Modifier.height(36.dp))
     }
 }

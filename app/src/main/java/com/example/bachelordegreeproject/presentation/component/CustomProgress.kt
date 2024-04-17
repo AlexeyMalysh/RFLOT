@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -20,6 +21,7 @@ fun CustomProgress() {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fly))
     Box(
         modifier = Modifier
+            .zIndex(1f)
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.5f)),
         contentAlignment = Alignment.Center

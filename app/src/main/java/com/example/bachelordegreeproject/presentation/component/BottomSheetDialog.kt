@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(onDismiss: () -> Unit, content: @Composable () -> Unit) {
-    val modalBottomSheetState = rememberModalBottomSheetState()
+    val modalBottomSheetState = rememberModalBottomSheetState(true)
 
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },

@@ -7,25 +7,26 @@ import androidx.lifecycle.viewModelScope
 import com.example.bachelordegreeproject.core.nfc.NfcReader
 import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
-import com.example.bachelordegreeproject.core.util.constants.UiState
-import com.example.bachelordegreeproject.data.remote.repository.auth.AuthRepository
+import com.example.bachelordegreeproject.data.remote.repository.zones.ZonesRepository
+import com.example.bachelordegreeproject.domain.models.ZoneInfo
+import com.example.bachelordegreeproject.domain.models.Zones
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class ZoneViewModel @Inject constructor(
     @ActivityScoped private val nfcReader: NfcReader,
-    private val authRepository: AuthRepository
+    private val zonesRepository: ZonesRepository
 ) : ViewModel() {
     private val _rfidStatus = MutableLiveData<RfidStatus>()
     val rfidStatus: LiveData<RfidStatus>
         get() = _rfidStatus
 
-    private val _authResult = MutableLiveData<UiState>()
-    val authResult: LiveData<UiState>
-        get() = _authResult
+    private val _zoneList = MutableLiveData<Result<Zones>>()
+    val zoneList: LiveData<Result<Zones>>
+        get() = _zoneList
 
     init {
         viewModelScope.launch {
@@ -35,24 +36,30 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun authPerson(login: String, password: String?) = viewModelScope.launch {
+    fun getAllZones() = viewModelScope.launch {
         _rfidStatus.postValue(RfidStatus.Idle)
-        _authResult.postValue(UiState.Loading)
-        val uiState = when (val result = authRepository.authPerson(login, password)) {
-            is Result.Success -> UiState.Success()
-            is Result.Fail -> UiState.Error(result.text)
-            else -> {
-                UiState.Idle
-            }
-        }
-        _authResult.postValue(uiState)
+        _zoneList.postValue(Result.Loading)
+        val result = zonesRepository.getAllZones()
+        _zoneList.postValue(result)
 
         //TODO delete
-        if (login == "admin") _authResult.postValue(UiState.Success())
+        _zoneList.postValue(
+            Result.Success(
+                Zones(
+                    listOf(
+                        ZoneInfo("Эконом класс", listOf("Марат Башаров", "Чи Ли")),
+                        ZoneInfo(
+                            "Бизнес класс",
+                            listOf("Васы Пупки")
+                        )
+                    )
+                )
+            )
+        )
     }
 
     fun resetParams() {
-        _authResult.postValue(UiState.Idle)
+        _zoneList.postValue(Result.Empty)
         _rfidStatus.postValue(RfidStatus.Idle)
     }
 }

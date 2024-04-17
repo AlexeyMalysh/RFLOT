@@ -18,8 +18,9 @@ class ZonesRepositoryImpl @Inject constructor(
     private val sessionRepository: SessionRepository
 ) : ZonesRepository {
     override suspend fun getAllZones(): Result<Zones> {
-        val reportId = sessionRepository.getSession().reportId
-        val params = GetZonesRequestModel(idReport = reportId)
+        // TODO fixed
+        //val reportId = sessionRepository.getSession().reportId
+        val params = GetZonesRequestModel(idReport = "1")
         return rflotHttpService.getZones(params).map { zonesMapper.map(it) }
     }
 

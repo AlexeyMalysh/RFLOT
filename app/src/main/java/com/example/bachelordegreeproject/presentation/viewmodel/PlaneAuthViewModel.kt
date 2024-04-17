@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bachelordegreeproject.core.nfc.NfcReader
+import com.example.bachelordegreeproject.core.util.constants.CheckType
 import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
 import com.example.bachelordegreeproject.core.util.constants.UiState
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class PlaneAuthViewModel @Inject constructor(
     @ActivityScoped private val nfcReader: NfcReader,
     private val authRepository: AuthRepository
 ) : ViewModel() {
@@ -23,9 +24,9 @@ class LoginViewModel @Inject constructor(
     val rfidStatus: LiveData<RfidStatus>
         get() = _rfidStatus
 
-    private val _authResult = MutableLiveData<UiState>()
-    val authResult: LiveData<UiState>
-        get() = _authResult
+    private val _authPlaneResult = MutableLiveData<UiState>()
+    val authPlaneResult: LiveData<UiState>
+        get() = _authPlaneResult
 
     init {
         viewModelScope.launch {
@@ -35,24 +36,30 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun authPerson(login: String, password: String?) = viewModelScope.launch {
+    fun authPlane(planeId: String, typeCheck: CheckType) = viewModelScope.launch {
         _rfidStatus.postValue(RfidStatus.Idle)
-        _authResult.postValue(UiState.Loading)
-        val uiState = when (val result = authRepository.authPerson(login, password)) {
-            is Result.Success -> UiState.Success()
-            is Result.Fail -> UiState.Error(result.text)
+        _authPlaneResult.postValue(UiState.Loading)
+        val uiState = when (val result = authRepository.authPlane(planeId, typeCheck.value)) {
+            is Result.Success -> {
+                UiState.Success()
+            }
+
+            is Result.Fail -> {
+                UiState.Error(result.text)
+            }
+
             else -> {
                 UiState.Idle
             }
         }
-        _authResult.postValue(uiState)
+        _authPlaneResult.postValue(uiState)
 
         //TODO delete
-        if (login == "admin") _authResult.postValue(UiState.Success())
+        if (typeCheck == CheckType.PostflightCheck) _authPlaneResult.postValue(UiState.Success())
     }
 
     fun resetParams() {
-        _authResult.postValue(UiState.Idle)
+        _authPlaneResult.postValue(UiState.Idle)
         _rfidStatus.postValue(RfidStatus.Idle)
     }
 }

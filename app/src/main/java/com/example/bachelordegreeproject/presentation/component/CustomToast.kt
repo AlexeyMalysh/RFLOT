@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
 
 private const val DELAY_CLOSE_TOAST = 2_000L
@@ -35,7 +36,8 @@ fun CustomToast(
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .background(backgroundColor.copy(alpha = 0.8f)),
+                .background(backgroundColor.copy(alpha = 0.8f))
+                .zIndex(1f),
             contentAlignment = Alignment.Center,
         ) {
             Text(

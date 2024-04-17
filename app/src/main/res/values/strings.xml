@@ -15,6 +15,7 @@
     <string name="loginActionButtonTitle">Войти</string>
     <string name="startShiftActionButtonTitle">Начать смену</string>
     <string name="positiveActionButtonTitle">Понятно</string>
+    <string name="repeat">Повторить попытку</string>
     <string name="scanRfidLogin">Или отсканируйте персональную RFID-метку</string>
     <string name="scanRfidPlane">Или поднесите устройство к RFID-метке</string>
 
@@ -28,4 +29,6 @@
 
 
     <string name="networkFailedAuth">Ошибка авторизаци. Повторите попытку позже или обратитесь в поддержку</string>
+    <string name="networkFailedStartSession">Невозможно начать сессию. Повторите попытку позже или обратитесь в поддержку</string>
+    <string name="networkFailedGetAllZones">Нет доступных зон. Повторите попытку позже или обратитесь в поддержку</string>
 </resources>

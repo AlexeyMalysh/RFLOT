@@ -25,13 +25,12 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun authPlane(
         planeId: String,
-        typeCheck: String,
-        reviewerName: String
+        typeCheck: String
     ): Result<Session> {
         val params = StartSessionRequestModel(
             idPlane = planeId,
             typeCheck = typeCheck,
-            fullNameChecker = reviewerName
+            fullNameChecker = "" // TODO delete
         )
         val result = rflotHttpService.startSession(params).map { sessionMapper.map(it) }
         if (result is Result.Success) sessionRepository.setSession(result.value)
