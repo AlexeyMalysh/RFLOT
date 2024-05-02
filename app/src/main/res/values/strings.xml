@@ -15,6 +15,7 @@
     <string name="loginActionButtonTitle">Войти</string>
     <string name="startShiftActionButtonTitle">Начать смену</string>
     <string name="positiveActionButtonTitle">Понятно</string>
+    <string name="endCheckPointsButtonTitle">Завершить проверку</string>
     <string name="repeat">Повторить попытку</string>
     <string name="scanRfidLogin">Или отсканируйте персональную RFID-метку</string>
     <string name="scanRfidPlane">Или поднесите устройство к RFID-метке</string>
@@ -22,6 +23,7 @@
     <string name="selectZoneHeader">Выберите зону для проверки</string>
     <string name="authPlaneHeader">Введите ID самолёта</string>
     <string name="loadingZone">Идет поиск…</string>
+    <string name="checkPointsTitle">Список АСО для проверки</string>
 
     <string name="nfcReaderTagIsNullFailure">Не успешное сканиорование. Потворите снова</string>
     <string name="nfcReaderModuleNotAvailable">NFC модуль недоступен. Обратитесь в поддержку</string>

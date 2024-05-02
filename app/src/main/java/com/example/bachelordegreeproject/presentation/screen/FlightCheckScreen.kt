@@ -1,6 +1,5 @@
 package com.example.bachelordegreeproject.presentation.screen
 
-import CustomProgress
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,23 +28,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.bachelordegreeproject.R.string
 import com.example.bachelordegreeproject.core.util.constants.CheckType
-import com.example.bachelordegreeproject.core.util.constants.UiState
 import com.example.bachelordegreeproject.presentation.component.AdditionalCheckInfoContent
 import com.example.bachelordegreeproject.presentation.component.BottomSheet
-import com.example.bachelordegreeproject.presentation.component.CustomToast
 import com.example.bachelordegreeproject.presentation.component.FlightCheckCard
 import com.example.bachelordegreeproject.presentation.route.Screen
 import com.example.bachelordegreeproject.presentation.theme.Dark
-import com.example.bachelordegreeproject.presentation.viewmodel.PlaneAuthViewModel
 
 @Composable
 fun FlightCheckScreen(
     navController: NavController,
-    viewModel: PlaneAuthViewModel,
-    planeId: String,
     modifier: Modifier = Modifier
 ) {
-    val authResult: UiState? by viewModel.authPlaneResult.observeAsState()
     var selectedType by remember { mutableStateOf<CheckType?>(null) }
 
     Box(
@@ -57,20 +49,6 @@ fun FlightCheckScreen(
                 color = Color.Transparent,
             )
     ) {
-
-        when (authResult) {
-            is UiState.Success -> {
-                navController.navigate(Screen.ZoneSelectionScreen.withArgs(planeId))
-                viewModel.resetParams()
-            }
-
-            is UiState.Loading -> {
-                CustomProgress()
-            }
-
-            else -> {}
-        }
-
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -79,17 +57,6 @@ fun FlightCheckScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(64.dp))
-            when (authResult) {
-                is UiState.Error -> {
-                    CustomToast(
-                        stringResource(id = string.networkFailedStartSession),
-                        backgroundColor = Color.White,
-                        textColor = Color.Red,
-                    )
-                }
-
-                else -> {}
-            }
             Text(
                 text = stringResource(id = string.selectCheckType),
                 textAlign = TextAlign.Center,
@@ -112,7 +79,9 @@ fun FlightCheckScreen(
                         selectedType = it
                     },
                     onClick = {
-                        viewModel.authPlane(planeId, CheckType.PreflightCheck)
+                        navController.navigate(
+                            Screen.PlaneAuthScreen.withArgs(CheckType.PreflightCheck.value)
+                        )
                     })
                 FlightCheckCard(
                     stringResource(id = CheckType.PostflightCheck.infoTitle),
@@ -122,7 +91,9 @@ fun FlightCheckScreen(
                         selectedType = it
                     },
                     onClick = {
-                        viewModel.authPlane(planeId, CheckType.PostflightCheck)
+                        navController.navigate(
+                            Screen.PlaneAuthScreen.withArgs(CheckType.PostflightCheck.value)
+                        )
                     })
                 FlightCheckCard(
                     stringResource(id = CheckType.ExitCheck.infoTitle),
@@ -132,7 +103,9 @@ fun FlightCheckScreen(
                         selectedType = it
                     },
                     onClick = {
-                        viewModel.authPlane(planeId, CheckType.ExitCheck)
+                        navController.navigate(
+                            Screen.PlaneAuthScreen.withArgs(CheckType.ExitCheck.value)
+                        )
                     })
 
                 if (selectedType != null) {

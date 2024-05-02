@@ -9,30 +9,26 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import com.example.bachelordegreeproject.R
-import com.example.bachelordegreeproject.core.util.converts.toHex
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.example.bachelordegreeproject.core.util.converts.toHex
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val SCAN_REPEAT_DELAY = 700
-
 @Singleton
 class NfcReaderImpl @Inject constructor() : NfcReader, NfcAdapter.ReaderCallback {
-
-    private var lastRfidScan: String? = null
-
     private var activity: Activity? = null
 
     private var nfcAdapter: NfcAdapter? = null
 
-    private val _rfidStateFlow: MutableStateFlow<RfidStatus> = MutableStateFlow(RfidStatus.Idle)
+    private val _rfidSharedFlow: MutableSharedFlow<RfidStatus> = MutableSharedFlow(replay = 0, extraBufferCapacity = 1)
 
-    override val rfidIdStateFlow: StateFlow<RfidStatus>
-        get() = _rfidStateFlow.asStateFlow()
+    override val rfidIdSharedFlow: SharedFlow<RfidStatus>
+        get() = _rfidSharedFlow.asSharedFlow()
 
     override fun initNfcReader(activity: Activity) {
         this.activity = activity
@@ -41,7 +37,7 @@ class NfcReaderImpl @Inject constructor() : NfcReader, NfcAdapter.ReaderCallback
     override fun startReadNfc() {
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
         if (nfcAdapter == null || (nfcAdapter?.isEnabled == false)) {
-            _rfidStateFlow.tryEmit(RfidStatus.Error(R.string.nfcReaderModuleNotAvailable))
+            _rfidSharedFlow.tryEmit(RfidStatus.Error(R.string.nfcReaderModuleNotAvailable))
         } else {
             enableReadTagByOnTagDiscovered()
         }
@@ -73,16 +69,11 @@ class NfcReaderImpl @Inject constructor() : NfcReader, NfcAdapter.ReaderCallback
     override fun onTagDiscovered(tag: Tag?) {
         val scanResult = if (tag != null) {
             val id = toHex(tag.id)
-            if (lastRfidScan == id) {
-                RfidStatus.Failure(R.string.nfcReaderTagEqualPrevious)
-            } else {
-                lastRfidScan = id
-                RfidStatus.Success(id)
-            }
+            RfidStatus.Success(id)
         } else {
             RfidStatus.Failure(R.string.nfcReaderTagIsNullFailure)
         }
-        _rfidStateFlow.tryEmit(scanResult)
+        _rfidSharedFlow.tryEmit(scanResult)
     }
 
     private fun enableReadTagByOnTagDiscovered() {

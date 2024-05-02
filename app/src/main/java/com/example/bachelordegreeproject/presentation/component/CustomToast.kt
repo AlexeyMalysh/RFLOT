@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
 
-private const val DELAY_CLOSE_TOAST = 2_000L
+private const val DELAY_CLOSE_TOAST = 3_000L
 
 @Composable
 fun CustomToast(

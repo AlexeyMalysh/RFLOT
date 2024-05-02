@@ -30,13 +30,14 @@ import com.example.bachelordegreeproject.domain.models.Zones
 import com.example.bachelordegreeproject.presentation.component.CustomToast
 import com.example.bachelordegreeproject.presentation.component.GradientButton
 import com.example.bachelordegreeproject.presentation.component.ZoneCard
+import com.example.bachelordegreeproject.presentation.route.Screen
 import com.example.bachelordegreeproject.presentation.theme.Dark
-import com.example.bachelordegreeproject.presentation.viewmodel.ZoneViewModel
+import com.example.bachelordegreeproject.presentation.viewmodel.MainViewModel
 
 @Composable
 fun ZoneSelectionScreen(
     navController: NavController,
-    viewModel: ZoneViewModel,
+    viewModel: MainViewModel,
     planeId: String,
     modifier: Modifier = Modifier
 ) {
@@ -128,14 +129,18 @@ fun ZoneSelectionScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                         ) {
-                            if(zones is Result.Success){
+                            if (zones is Result.Success) {
                                 (zones as Result.Success<Zones>).value.zonesInfo.forEach { info ->
                                     item {
                                         ZoneCard(
                                             zoneName = info.name,
                                             reviewersName = info.reviewersName
                                         ) {
-                                            // TODO click on zone card
+                                            navController.navigate(
+                                                Screen.CheckPointsScreen.withArgs(
+                                                    info.name
+                                                )
+                                            )
                                         }
                                         Spacer(modifier = Modifier.height(10.dp))
                                     }

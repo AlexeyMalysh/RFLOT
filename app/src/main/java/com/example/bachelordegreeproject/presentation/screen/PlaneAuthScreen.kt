@@ -1,5 +1,6 @@
 package com.example.bachelordegreeproject.presentation.screen
 
+import CustomProgress
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,21 +34,24 @@ import com.example.bachelordegreeproject.R
 import com.example.bachelordegreeproject.R.string
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
 import com.example.bachelordegreeproject.core.util.constants.UIConst
+import com.example.bachelordegreeproject.core.util.constants.UiState
 import com.example.bachelordegreeproject.presentation.component.CustomToast
 import com.example.bachelordegreeproject.presentation.component.GradientButton
 import com.example.bachelordegreeproject.presentation.component.SimpleOutlinedTextFieldSample
 import com.example.bachelordegreeproject.presentation.route.Screen
 import com.example.bachelordegreeproject.presentation.theme.Dark
-import com.example.bachelordegreeproject.presentation.viewmodel.PlaneAuthViewModel
+import com.example.bachelordegreeproject.presentation.viewmodel.MainViewModel
 
 @Composable
 fun PlaneAuthScreen(
     navController: NavController,
-    viewModel: PlaneAuthViewModel,
+    viewModel: MainViewModel,
+    checkType: String,
     modifier: Modifier = Modifier
 ) {
     val rfidInfo: RfidStatus? by viewModel.rfidStatus.observeAsState()
-    var login by rememberSaveable { mutableStateOf("") }
+    val authResult: UiState? by viewModel.authPlaneResult.observeAsState()
+    var planeId by rememberSaveable { mutableStateOf("") }
 
     Box(
         modifier = modifier
@@ -59,8 +63,10 @@ fun PlaneAuthScreen(
     ) {
         when (rfidInfo) {
             is RfidStatus.Success -> {
-                navController.navigate(Screen.FlightCheckScreen.withArgs((rfidInfo as RfidStatus.Success).rfid))
-                viewModel.resetParams()
+                viewModel.authPlane(
+                    planeId = (rfidInfo as RfidStatus.Success).rfid,
+                    typeCheck = checkType
+                )
             }
 
             is RfidStatus.Failure -> CustomToast(stringResource(id = (rfidInfo as RfidStatus.Failure).failure))
@@ -74,12 +80,37 @@ fun PlaneAuthScreen(
             else -> {}
         }
 
+        when (authResult) {
+            is UiState.Success -> {
+                viewModel.resetParams()
+                navController.navigate(
+                    Screen.ZoneSelectionScreen.withArgs(
+                        (authResult as UiState.Success).text ?: ""
+                    )
+                )
+            }
+
+            is UiState.Loading -> {
+                CustomProgress()
+            }
+
+            is UiState.Error -> {
+                CustomToast(
+                    stringResource(id = string.networkFailedStartSession),
+                    backgroundColor = Color.White,
+                    textColor = Color.Red,
+                    modifier = Modifier.padding(top = 52.dp)
+                )
+            }
+
+            else -> {}
+        }
+
         Box(
             modifier = Modifier
                 .align(Alignment.Center),
         ) {
-
-            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login_page_animation))
+            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login_animation))
             LottieAnimation(
                 modifier = Modifier
                     .height(180.dp)
@@ -109,17 +140,16 @@ fun PlaneAuthScreen(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 SimpleOutlinedTextFieldSample(onTextChanged = {
-                    login = it
+                    planeId = it
                 })
 
                 Spacer(modifier = Modifier.padding(32.dp))
 
                 GradientButton(
                     onClickAction = {
-                        if (login.isNotEmpty()) navController.navigate(
-                            Screen.FlightCheckScreen.withArgs(
-                                login
-                            )
+                        viewModel.authPlane(
+                            planeId = planeId,
+                            typeCheck = checkType
                         )
                     },
                     gradientColors = UIConst.gradientColor,
@@ -140,6 +170,5 @@ fun PlaneAuthScreen(
 
             }
         }
-
     }
 }

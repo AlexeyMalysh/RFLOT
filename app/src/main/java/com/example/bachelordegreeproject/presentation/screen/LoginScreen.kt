@@ -41,12 +41,12 @@ import com.example.bachelordegreeproject.presentation.component.SimpleOutlinedPa
 import com.example.bachelordegreeproject.presentation.component.SimpleOutlinedTextFieldSample
 import com.example.bachelordegreeproject.presentation.route.Screen
 import com.example.bachelordegreeproject.presentation.theme.Dark
-import com.example.bachelordegreeproject.presentation.viewmodel.LoginViewModel
+import com.example.bachelordegreeproject.presentation.viewmodel.MainViewModel
 
 @Composable
 fun LoginPage(
     navController: NavController,
-    viewModel: LoginViewModel,
+    viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val rfidInfo: RfidStatus? by viewModel.rfidStatus.observeAsState()
@@ -81,11 +81,8 @@ fun LoginPage(
 
         when (authResult) {
             is UiState.Success -> {
-                navController.navigate(Screen.PlaneAuthScreen.route) {
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
                 viewModel.resetParams()
+                navController.navigate(Screen.FlightCheckScreen.route)
             }
 
             is UiState.Error -> CustomToast(
@@ -106,7 +103,7 @@ fun LoginPage(
                 .align(Alignment.Center),
         ) {
 
-            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login_page_animation))
+            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login_animation))
             LottieAnimation(
                 modifier = Modifier
                     .height(180.dp)

@@ -18,7 +18,7 @@ import com.example.bachelordegreeproject.R
 
 @Composable
 fun CustomProgress() {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fly))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.progress_animation))
     Box(
         modifier = Modifier
             .zIndex(1f)
