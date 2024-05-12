@@ -43,7 +43,6 @@ fun PlaneAuthScreen(
     modifier: Modifier = Modifier
 ) {
     val rfidInfo: RfidStatus? by viewModel.rfidStatus.observeAsState()
-    val authResult: UiState? by viewModel.authPlaneResult.observeAsState()
     var planeId by rememberSaveable { mutableStateOf("") }
 
     Box(
