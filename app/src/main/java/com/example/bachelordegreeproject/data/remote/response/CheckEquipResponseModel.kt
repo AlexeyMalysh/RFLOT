@@ -7,5 +7,5 @@ data class CheckEquipResponseModel(
     val name: String,
     val space: String,
     val type: String,
-    val lastStatus: String,
+    val lastStatus: String
 )

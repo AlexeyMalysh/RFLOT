@@ -1,5 +1,6 @@
 package com.example.bachelordegreeproject.presentation.route
 
+import ExitCheckScreen
 import ZoneSelectionScreen
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -28,25 +29,26 @@ fun Route() {
             }
         })
         composable(
-            "${Screen.PlaneAuthScreen.route}/{checkType}",
-            arguments = listOf(navArgument("checkType") { type = NavType.StringType }),
-            content = { backStackEntry ->
+            Screen.PlaneAuthScreen.route,
+            content = {
                 AppTopBar(navController) {
                     MaterialTheme {
                         PlaneAuthScreen(
                             navController = navController,
-                            viewModel = viewModel,
-                            backStackEntry.arguments?.getString("checkType").toString()
+                            viewModel = viewModel
                         )
                     }
                 }
             })
-        composable(route = Screen.FlightCheckScreen.route,
-            content = {
+        composable(route = "${Screen.FlightCheckScreen.route}/{planeId}",
+            arguments = listOf(navArgument("planeId") { type = NavType.StringType }),
+            content = { backStackEntry ->
                 AppTopBar(navController) {
                     MaterialTheme {
                         FlightCheckScreen(
-                            navController = navController
+                            navController = navController,
+                            viewModel = viewModel,
+                            backStackEntry.arguments?.getString("planeId").toString()
                         )
                     }
                 }
@@ -74,6 +76,18 @@ fun Route() {
                             navController = navController,
                             viewModel = viewModel,
                             backStackEntry.arguments?.getString("zoneName").toString()
+                        )
+                    }
+                }
+            })
+        composable(
+            Screen.ExitCheckScreen.route,
+            content = {
+                AppTopBar(navController) {
+                    MaterialTheme {
+                        ExitCheckScreen(
+                            navController = navController,
+                            viewModel = viewModel
                         )
                     }
                 }

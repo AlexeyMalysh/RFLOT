@@ -17,7 +17,7 @@ class SessionRepository @Inject constructor(
     private val _sessionState = MutableLiveData<Session?>()
     val sessionState: LiveData<Session?> = _sessionState
 
-    suspend fun getSession(): Session = sessionState.value ?: loadSession()
+    suspend fun getSession(): Session? = sessionState.value ?: loadSession()
 
     suspend fun setSession(session: Session) {
         val sessionEntity = sessionEntityMapper.reverse(session)
@@ -30,8 +30,8 @@ class SessionRepository @Inject constructor(
         setSessionValue(null)
     }
 
-    private suspend fun loadSession(): Session {
-        val session = sessionDao.getSession().let(sessionEntityMapper::map)
+    private suspend fun loadSession(): Session? {
+        val session = sessionDao.getSession()?.let(sessionEntityMapper::map)
         setSessionValue(session)
         return session
     }

@@ -9,7 +9,7 @@ import com.example.bachelordegreeproject.database.model.SessionEntity
 @Dao
 interface SessionDao {
     @Query("SELECT * FROM session LIMIT 1")
-    suspend fun getSession(): SessionEntity
+    suspend fun getSession(): SessionEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setSession(session: SessionEntity)

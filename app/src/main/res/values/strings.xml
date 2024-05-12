@@ -19,6 +19,11 @@
     <string name="repeat">Повторить попытку</string>
     <string name="scanRfidLogin">Или отсканируйте персональную RFID-метку</string>
     <string name="scanRfidPlane">Или поднесите устройство к RFID-метке</string>
+    <string name="exitCheckDescription">Держите устройство перед собой до выхода пассажиров</string>
+
+    <string name="equipmentName">Оборудование: %1$s</string>
+    <string name="equipmentType">Тип: %1$s</string>
+    <string name="equipmentPlace">Место: %1$s</string>
 
     <string name="selectZoneHeader">Выберите зону для проверки</string>
     <string name="authPlaneHeader">Введите ID самолёта</string>
@@ -33,4 +38,15 @@
     <string name="networkFailedAuth">Ошибка авторизаци. Повторите попытку позже или обратитесь в поддержку</string>
     <string name="networkFailedStartSession">Невозможно начать сессию. Повторите попытку позже или обратитесь в поддержку</string>
     <string name="networkFailedGetAllZones">Нет доступных зон. Повторите попытку позже или обратитесь в поддержку</string>
+
+
+    <string name="colorByStatusIdle">Не проверен</string>
+    <string name="colorByStatusOk">Проблем нет</string>
+    <string name="colorByStatusNone">Не найден</string>
+    <string name="colorByStatusNotFound">Не сканируется</string>
+    <string name="colorByStatusDataFail">Истёк срок годности</string>
+    <string name="colorByStatusDataMonth">Срок годности меньше месяца</string>
+    <string name="colorByStatusArсhive">В архиве</string>
+
+    <string name="informationByStatusTitle">Информация о статусах</string>
 </resources>

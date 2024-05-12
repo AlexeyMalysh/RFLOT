@@ -82,6 +82,7 @@ class RflotHttpServiceImpl @Inject constructor(
                     }.body()
                 )
             } catch (e: Exception) {
+                e.printStackTrace()
                 Timber.e("Failed to check zone: $e")
                 Result.Fail(e)
             }

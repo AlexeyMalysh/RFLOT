@@ -1,17 +1,26 @@
 package com.example.bachelordegreeproject.presentation.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,14 +35,16 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.bachelordegreeproject.R
 import com.example.bachelordegreeproject.R.string
-import com.example.bachelordegreeproject.core.util.constants.EquipStatus
+import com.example.bachelordegreeproject.core.util.constants.ColorByStatus
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
 import com.example.bachelordegreeproject.core.util.constants.UIConst
-import com.example.bachelordegreeproject.core.util.constants.UiState
 import com.example.bachelordegreeproject.domain.models.EquipState
+import com.example.bachelordegreeproject.presentation.component.AdditionalCheckInfoContent
 import com.example.bachelordegreeproject.presentation.component.AirplaneSeats
+import com.example.bachelordegreeproject.presentation.component.BottomSheet
 import com.example.bachelordegreeproject.presentation.component.CustomToast
 import com.example.bachelordegreeproject.presentation.component.GradientButton
+import com.example.bachelordegreeproject.presentation.component.StatusBySeatsColor
 import com.example.bachelordegreeproject.presentation.theme.Dark
 import com.example.bachelordegreeproject.presentation.viewmodel.MainViewModel
 
@@ -46,6 +57,7 @@ fun CheckPointsScreen(
 ) {
     val rfidInfo: RfidStatus? by viewModel.rfidStatus.observeAsState()
     val equips: List<EquipState>? by viewModel.equipsList.observeAsState()
+    var showInfoByStatus by remember { mutableStateOf<Boolean?>(null) }
 
     when (rfidInfo) {
         is RfidStatus.Success -> viewModel.convertEquipsList()
@@ -78,14 +90,30 @@ fun CheckPointsScreen(
             fontWeight = Bold
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = zoneName,
-            textAlign = TextAlign.Center,
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.headlineSmall,
-            color = Dark
-        )
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = zoneName,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall,
+                color = Dark
+            )
+            IconButton(onClick =
+            {
+                showInfoByStatus = true
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = "Info",
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.height(10.dp))
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.scan_animation))
         LottieAnimation(
@@ -113,5 +141,18 @@ fun CheckPointsScreen(
 
         Spacer(modifier = Modifier.padding(20.dp))
 
+        if (showInfoByStatus == true) {
+            BottomSheet(onDismiss = { showInfoByStatus = null }) {
+                AdditionalCheckInfoContent(
+                    infoTitle = stringResource(id = string.informationByStatusTitle),
+                    infoContent = {
+                        StatusBySeatsColor(ColorByStatus.entries.toTypedArray())
+                    }
+                ) {
+                    showInfoByStatus = null
+                }
+            }
+
+        }
     }
 }

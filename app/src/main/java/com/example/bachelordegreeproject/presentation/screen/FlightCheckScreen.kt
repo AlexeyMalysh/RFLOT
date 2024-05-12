@@ -1,5 +1,6 @@
 package com.example.bachelordegreeproject.presentation.screen
 
+import CustomProgress
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,21 +27,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.bachelordegreeproject.R.string
 import com.example.bachelordegreeproject.core.util.constants.CheckType
+import com.example.bachelordegreeproject.core.util.constants.UiState
 import com.example.bachelordegreeproject.presentation.component.AdditionalCheckInfoContent
 import com.example.bachelordegreeproject.presentation.component.BottomSheet
+import com.example.bachelordegreeproject.presentation.component.CustomToast
 import com.example.bachelordegreeproject.presentation.component.FlightCheckCard
 import com.example.bachelordegreeproject.presentation.route.Screen
 import com.example.bachelordegreeproject.presentation.theme.Dark
+import com.example.bachelordegreeproject.presentation.viewmodel.MainViewModel
 
 @Composable
 fun FlightCheckScreen(
     navController: NavController,
+    viewModel: MainViewModel,
+    planeId: String,
     modifier: Modifier = Modifier
 ) {
     var selectedType by remember { mutableStateOf<CheckType?>(null) }
+    var checkType by remember { mutableStateOf<CheckType?>(null) }
+    val authResult: UiState? by viewModel.authPlaneResult.observeAsState()
 
     Box(
         modifier = modifier
@@ -49,6 +59,38 @@ fun FlightCheckScreen(
                 color = Color.Transparent,
             )
     ) {
+        when (authResult) {
+            is UiState.Success -> {
+                viewModel.resetParams()
+                if (checkType == CheckType.ExitCheck) {
+                    navController.navigate(
+                        Screen.ExitCheckScreen.route
+                    )
+                } else {
+                    navController.navigate(
+                        Screen.ZoneSelectionScreen.withArgs(
+                            (authResult as UiState.Success).text ?: ""
+                        )
+                    )
+                }
+            }
+
+            is UiState.Loading -> {
+                CustomProgress()
+            }
+
+            is UiState.Error -> {
+                CustomToast(
+                    stringResource(id = string.networkFailedStartSession),
+                    backgroundColor = Color.White,
+                    textColor = Color.Red,
+                    modifier = Modifier.padding(top = 52.dp)
+                )
+            }
+
+            else -> {}
+        }
+
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -79,8 +121,10 @@ fun FlightCheckScreen(
                         selectedType = it
                     },
                     onClick = {
-                        navController.navigate(
-                            Screen.PlaneAuthScreen.withArgs(CheckType.PreflightCheck.value)
+                        checkType = CheckType.PreflightCheck
+                        viewModel.authPlane(
+                            planeId = planeId,
+                            typeCheck = CheckType.PreflightCheck.value
                         )
                     })
                 FlightCheckCard(
@@ -91,8 +135,10 @@ fun FlightCheckScreen(
                         selectedType = it
                     },
                     onClick = {
-                        navController.navigate(
-                            Screen.PlaneAuthScreen.withArgs(CheckType.PostflightCheck.value)
+                        checkType = CheckType.PostflightCheck
+                        viewModel.authPlane(
+                            planeId = planeId,
+                            typeCheck = CheckType.PostflightCheck.value
                         )
                     })
                 FlightCheckCard(
@@ -103,8 +149,10 @@ fun FlightCheckScreen(
                         selectedType = it
                     },
                     onClick = {
-                        navController.navigate(
-                            Screen.PlaneAuthScreen.withArgs(CheckType.ExitCheck.value)
+                        checkType = CheckType.ExitCheck
+                        viewModel.authPlane(
+                            planeId = planeId,
+                            typeCheck = CheckType.ExitCheck.value
                         )
                     })
 
@@ -112,7 +160,14 @@ fun FlightCheckScreen(
                     BottomSheet(onDismiss = { selectedType = null }) {
                         AdditionalCheckInfoContent(
                             infoTitle = selectedType?.let { stringResource(it.infoTitle) } ?: "",
-                            infoText = selectedType?.let { stringResource(it.infoText) } ?: ""
+                            infoContent = {
+                                Text(
+                                    text = selectedType?.let { stringResource(it.infoText) } ?: "",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    color = Dark,
+                                    fontSize = 16.sp
+                                )
+                            }
                         ) {
                             selectedType = null
                         }

@@ -31,6 +31,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:exported="false"
+            android:name=".core.receiver.RingtoneReceiver">
+            <intent-filter>
+                <action android:name="com.example.bachelordegreeproject.RINGTONES" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

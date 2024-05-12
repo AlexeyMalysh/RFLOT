@@ -6,6 +6,8 @@ import com.example.bachelordegreeproject.core.nfc.NfcReader
 import com.example.bachelordegreeproject.core.nfc.NfcReaderImpl
 import com.example.bachelordegreeproject.data.remote.repository.auth.AuthRepository
 import com.example.bachelordegreeproject.data.remote.repository.auth.AuthRepositoryImpl
+import com.example.bachelordegreeproject.data.remote.repository.equip.EquipRepository
+import com.example.bachelordegreeproject.data.remote.repository.equip.EquipRepositoryImpl
 import com.example.bachelordegreeproject.data.remote.repository.zones.ZonesRepository
 import com.example.bachelordegreeproject.data.remote.repository.zones.ZonesRepositoryImpl
 import dagger.Binds
@@ -34,4 +36,9 @@ interface AppBindsModule {
     fun bindZonesRepository(
         impl: ZonesRepositoryImpl
     ): ZonesRepository
+
+    @Binds
+    fun bindEquipRepository(
+        impl: EquipRepositoryImpl
+    ): EquipRepository
 }

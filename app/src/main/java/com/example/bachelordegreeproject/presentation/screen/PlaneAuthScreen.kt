@@ -1,6 +1,5 @@
 package com.example.bachelordegreeproject.presentation.screen
 
-import CustomProgress
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,11 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.bachelordegreeproject.R
 import com.example.bachelordegreeproject.R.string
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
 import com.example.bachelordegreeproject.core.util.constants.UIConst
@@ -46,7 +40,6 @@ import com.example.bachelordegreeproject.presentation.viewmodel.MainViewModel
 fun PlaneAuthScreen(
     navController: NavController,
     viewModel: MainViewModel,
-    checkType: String,
     modifier: Modifier = Modifier
 ) {
     val rfidInfo: RfidStatus? by viewModel.rfidStatus.observeAsState()
@@ -63,9 +56,8 @@ fun PlaneAuthScreen(
     ) {
         when (rfidInfo) {
             is RfidStatus.Success -> {
-                viewModel.authPlane(
-                    planeId = (rfidInfo as RfidStatus.Success).rfid,
-                    typeCheck = checkType
+                navController.navigate(
+                    Screen.FlightCheckScreen.withArgs((rfidInfo as RfidStatus.Success).rfid)
                 )
             }
 
@@ -80,45 +72,10 @@ fun PlaneAuthScreen(
             else -> {}
         }
 
-        when (authResult) {
-            is UiState.Success -> {
-                viewModel.resetParams()
-                navController.navigate(
-                    Screen.ZoneSelectionScreen.withArgs(
-                        (authResult as UiState.Success).text ?: ""
-                    )
-                )
-            }
-
-            is UiState.Loading -> {
-                CustomProgress()
-            }
-
-            is UiState.Error -> {
-                CustomToast(
-                    stringResource(id = string.networkFailedStartSession),
-                    backgroundColor = Color.White,
-                    textColor = Color.Red,
-                    modifier = Modifier.padding(top = 52.dp)
-                )
-            }
-
-            else -> {}
-        }
-
         Box(
             modifier = Modifier
                 .align(Alignment.Center),
         ) {
-            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login_animation))
-            LottieAnimation(
-                modifier = Modifier
-                    .height(180.dp)
-                    .fillMaxWidth(),
-                composition = composition,
-                iterations = LottieConstants.IterateForever,
-            )
-
             Column(
                 modifier = Modifier
                     .padding(16.dp)
@@ -127,13 +84,11 @@ fun PlaneAuthScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(50.dp))
-
                 Text(
                     text = stringResource(id = string.authPlaneHeader),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(top = 130.dp)
+                        .padding(top = 100.dp)
                         .fillMaxWidth(),
                     style = MaterialTheme.typography.headlineSmall,
                     color = Dark,
@@ -147,9 +102,8 @@ fun PlaneAuthScreen(
 
                 GradientButton(
                     onClickAction = {
-                        viewModel.authPlane(
-                            planeId = planeId,
-                            typeCheck = checkType
+                        navController.navigate(
+                            Screen.FlightCheckScreen.withArgs(planeId)
                         )
                     },
                     gradientColors = UIConst.gradientColor,

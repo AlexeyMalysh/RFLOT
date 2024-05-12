@@ -1,5 +1,6 @@
 package com.example.bachelordegreeproject.presentation.viewmodel
 
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +11,9 @@ import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
 import com.example.bachelordegreeproject.core.util.constants.UiState
 import com.example.bachelordegreeproject.data.remote.repository.auth.AuthRepository
+import com.example.bachelordegreeproject.data.remote.repository.equip.EquipRepository
 import com.example.bachelordegreeproject.data.remote.repository.zones.ZonesRepository
+import com.example.bachelordegreeproject.domain.models.EquipInfo
 import com.example.bachelordegreeproject.domain.models.EquipState
 import com.example.bachelordegreeproject.domain.models.ZoneInfo
 import com.example.bachelordegreeproject.domain.models.Zones
@@ -19,12 +22,15 @@ import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     @ActivityScoped private val nfcReader: NfcReader,
     private val authRepository: AuthRepository,
-    private val zonesRepository: ZonesRepository
+    private val zonesRepository: ZonesRepository,
+    private val equipRepository: EquipRepository,
+    @Named("alarmIntent") private val alarmIntent: Intent
 ) : ViewModel() {
     private val _rfidStatus = MutableLiveData<RfidStatus>()
     val rfidStatus: LiveData<RfidStatus>
@@ -45,6 +51,14 @@ class MainViewModel @Inject constructor(
     private val _equipsList = MutableLiveData<List<EquipState>>()
     val equipsList: LiveData<List<EquipState>>
         get() = _equipsList
+
+    private val _equipExist = MutableLiveData<EquipInfo?>()
+    val equipExist: LiveData<EquipInfo?>
+        get() = _equipExist
+
+    private val _playSound = MutableLiveData<Intent?>()
+    val playSound: LiveData<Intent?>
+        get() = _playSound
 
     init {
         viewModelScope.launch {
@@ -94,7 +108,8 @@ class MainViewModel @Inject constructor(
             equips[index] = equip.copy(status = EquipStatus.DateFail)
             _equipsList.postValue(equips)
         }
-        if (_rfidStatus.value is RfidStatus.Success) lastRfid = (_rfidStatus.value as RfidStatus.Success).rfid
+        if (_rfidStatus.value is RfidStatus.Success) lastRfid =
+            (_rfidStatus.value as RfidStatus.Success).rfid
         count++
     }
 
@@ -147,10 +162,10 @@ class MainViewModel @Inject constructor(
             Result.Success(
                 Zones(
                     listOf(
-                        ZoneInfo("Эконом класс", listOf("Гай Ричи")),
+                        ZoneInfo("Эконом класс", listOf("Бортпроводник 1")),
                         ZoneInfo(
                             "Бизнес класс",
-                            listOf("Тим Бертон")
+                            listOf("Бортпроводник 2")
                         )
                     )
                 )
@@ -158,10 +173,32 @@ class MainViewModel @Inject constructor(
         )
     }
 
+    fun checkExistEquipment() {
+        if (_rfidStatus.value is RfidStatus.Success) {
+            viewModelScope.launch {
+                val result =
+                    equipRepository.checkEquip((_rfidStatus.value as RfidStatus.Success).rfid)
+                if (result is Result.Success) {
+                    result.value.let { _equipExist.postValue(it) }
+                    _playSound.postValue(alarmIntent)
+                } else {
+                    _playSound.postValue(null)
+                }
+                _rfidStatus.postValue(RfidStatus.Idle)
+            }
+            // TODO delete
+            _equipExist.postValue(EquipInfo("Инструкция", "A2", "", ""))
+            _playSound.postValue(alarmIntent)
+            //
+        }
+    }
+
     fun resetParams() {
         _authResult.postValue(UiState.Idle)
         _authPlaneResult.postValue(UiState.Idle)
         _zoneList.postValue(Result.Empty)
         _rfidStatus.postValue(RfidStatus.Idle)
+        _equipExist.postValue(null)
+        _playSound.postValue(null)
     }
 }

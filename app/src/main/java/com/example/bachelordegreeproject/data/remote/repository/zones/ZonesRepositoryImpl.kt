@@ -25,7 +25,7 @@ class ZonesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getZonesInfo(zoneName: String): Result<EquipByZoneInfo> {
-        val reportId = sessionRepository.getSession().reportId
+        val reportId = sessionRepository.getSession()?.reportId ?: ""
         val params = CheckZoneRequestModel(idReport = zoneName, nameZone = reportId)
         return rflotHttpService.checkZone(params).map { equipByZoneMapper.map(it) }
     }
