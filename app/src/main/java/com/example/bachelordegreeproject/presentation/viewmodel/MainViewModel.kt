@@ -10,12 +10,13 @@ import com.example.bachelordegreeproject.core.util.constants.EquipStatus
 import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.core.util.constants.RfidStatus
 import com.example.bachelordegreeproject.core.util.constants.UiState
+import com.example.bachelordegreeproject.core.util.constants.observe
 import com.example.bachelordegreeproject.data.remote.repository.auth.AuthRepository
 import com.example.bachelordegreeproject.data.remote.repository.equip.EquipRepository
+import com.example.bachelordegreeproject.data.remote.repository.socket.SocketRepository
 import com.example.bachelordegreeproject.data.remote.repository.zones.ZonesRepository
 import com.example.bachelordegreeproject.domain.models.EquipInfo
 import com.example.bachelordegreeproject.domain.models.EquipState
-import com.example.bachelordegreeproject.domain.models.ZoneInfo
 import com.example.bachelordegreeproject.domain.models.Zones
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ActivityScoped
@@ -30,6 +31,7 @@ class MainViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val zonesRepository: ZonesRepository,
     private val equipRepository: EquipRepository,
+    private val socketRepository: SocketRepository,
     @Named("alarmIntent") private val alarmIntent: Intent
 ) : ViewModel() {
     private val _rfidStatus = MutableLiveData<RfidStatus>()
@@ -60,63 +62,68 @@ class MainViewModel @Inject constructor(
     val playSound: LiveData<Intent?>
         get() = _playSound
 
+    private val _zoneName = MutableLiveData<UiState>()
+    val zoneName: LiveData<UiState>
+        get() = _zoneName
+
     init {
+        enableSocketListeners()
         viewModelScope.launch {
             nfcReader.rfidIdSharedFlow.collect { result ->
                 _rfidStatus.postValue(result)
             }
         }
-        val equip: List<EquipState> = listOf(
-            EquipState("A1", EquipStatus.OK),
-            EquipState("A2", EquipStatus.UNKNOWN),
-            EquipState("A3", EquipStatus.UNKNOWN),
-            EquipState("A4", EquipStatus.UNKNOWN),
-            EquipState("B1", EquipStatus.UNKNOWN),
-            EquipState("B2", EquipStatus.UNKNOWN),
-            EquipState("B3", EquipStatus.UNKNOWN),
-            EquipState("B4", EquipStatus.UNKNOWN),
-            EquipState("C1", EquipStatus.UNKNOWN),
-            EquipState("C2", EquipStatus.UNKNOWN),
-            EquipState("C3", EquipStatus.UNKNOWN),
-            EquipState("C4", EquipStatus.UNKNOWN),
-            EquipState("D1", EquipStatus.DateFail),
-            EquipState("D2", EquipStatus.OK),
-            EquipState("D3", EquipStatus.OK),
-            EquipState("D4", EquipStatus.OK),
-        )
-        _equipsList.postValue(equip)
+//        val equip: List<EquipState> = listOf(
+//            EquipState("A1", EquipStatus.OK),
+//            EquipState("A2", EquipStatus.UNKNOWN),
+//            EquipState("A3", EquipStatus.UNKNOWN),
+//            EquipState("A4", EquipStatus.UNKNOWN),
+//            EquipState("B1", EquipStatus.UNKNOWN),
+//            EquipState("B2", EquipStatus.UNKNOWN),
+//            EquipState("B3", EquipStatus.UNKNOWN),
+//            EquipState("B4", EquipStatus.UNKNOWN),
+//            EquipState("C1", EquipStatus.UNKNOWN),
+//            EquipState("C2", EquipStatus.UNKNOWN),
+//            EquipState("C3", EquipStatus.UNKNOWN),
+//            EquipState("C4", EquipStatus.UNKNOWN),
+//            EquipState("D1", EquipStatus.DateFail),
+//            EquipState("D2", EquipStatus.OK),
+//            EquipState("D3", EquipStatus.OK),
+//            EquipState("D4", EquipStatus.OK),
+//        )
+//        _equipsList.postValue(equip)
     }
 
     // TODO delete
-    var count = 0
-    var lastRfid: String? = null
-    fun convertEquipsList() {
-        val equips = _equipsList.value?.toMutableList() ?: return
-        if (count == 0 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
-            val equip = equips.find { it.space == "A2" } ?: return
-            val index = equips.indexOf(equip)
-            equips[index] = equip.copy(status = EquipStatus.OK)
-            _equipsList.postValue(equips)
-        } else if (count == 1 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
-            val equip = equips.find { it.space == "A3" } ?: return
-            val index = equips.indexOf(equip)
-            equips[index] = equip.copy(status = EquipStatus.DateFail)
-            _equipsList.postValue(equips)
-        } else if (count == 2 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
-            val equip = equips.find { it.space == "A4" } ?: return
-            val index = equips.indexOf(equip)
-            equips[index] = equip.copy(status = EquipStatus.DateFail)
-            _equipsList.postValue(equips)
-        }
-        if (_rfidStatus.value is RfidStatus.Success) lastRfid =
-            (_rfidStatus.value as RfidStatus.Success).rfid
-        count++
-    }
+//    var count = 0
+//    var lastRfid: String? = null
+//    fun convertEquipsList() {
+//        val equips = _equipsList.value?.toMutableList() ?: return
+//        if (count == 0 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
+//            val equip = equips.find { it.space == "A2" } ?: return
+//            val index = equips.indexOf(equip)
+//            equips[index] = equip.copy(status = EquipStatus.OK)
+//            _equipsList.postValue(equips)
+//        } else if (count == 1 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
+//            val equip = equips.find { it.space == "A3" } ?: return
+//            val index = equips.indexOf(equip)
+//            equips[index] = equip.copy(status = EquipStatus.DateFail)
+//            _equipsList.postValue(equips)
+//        } else if (count == 2 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
+//            val equip = equips.find { it.space == "A4" } ?: return
+//            val index = equips.indexOf(equip)
+//            equips[index] = equip.copy(status = EquipStatus.DateFail)
+//            _equipsList.postValue(equips)
+//        }
+//        if (_rfidStatus.value is RfidStatus.Success) lastRfid =
+//            (_rfidStatus.value as RfidStatus.Success).rfid
+//        count++
+//    }
 
-    fun authPerson(login: String, password: String?) = viewModelScope.launch {
+    fun authPersonByLogin(login: String, password: String?) = viewModelScope.launch {
         _rfidStatus.postValue(RfidStatus.Idle)
         _authResult.postValue(UiState.Loading)
-        val uiState = when (val result = authRepository.authPerson(login, password)) {
+        val uiState = when (val result = authRepository.authByLogin(login, password)) {
             is Result.Success -> UiState.Success()
             is Result.Fail -> UiState.Error(result.text)
             else -> {
@@ -124,9 +131,19 @@ class MainViewModel @Inject constructor(
             }
         }
         _authResult.postValue(uiState)
+    }
 
-        //TODO delete
-        if (login == "admin") _authResult.postValue(UiState.Success())
+    fun authPersonByRfid(rfid: String) = viewModelScope.launch {
+        _rfidStatus.postValue(RfidStatus.Idle)
+        _authResult.postValue(UiState.Loading)
+        val uiState = when (val result = authRepository.authByRfid(rfid)) {
+            is Result.Success -> UiState.Success()
+            is Result.Fail -> UiState.Error(result.text)
+            else -> {
+                UiState.Idle
+            }
+        }
+        _authResult.postValue(uiState)
     }
 
     fun authPlane(planeId: String, typeCheck: String) = viewModelScope.launch {
@@ -156,21 +173,25 @@ class MainViewModel @Inject constructor(
         _zoneList.postValue(Result.Loading)
         val result = zonesRepository.getAllZones()
         _zoneList.postValue(result)
+    }
 
-        //TODO delete
-        _zoneList.postValue(
-            Result.Success(
-                Zones(
-                    listOf(
-                        ZoneInfo("Эконом класс", listOf("Бортпроводник 1")),
-                        ZoneInfo(
-                            "Бизнес класс",
-                            listOf("Бортпроводник 2")
-                        )
-                    )
-                )
-            )
-        )
+    fun startCheckZone(zoneId: String) = viewModelScope.launch {
+        _zoneName.postValue(UiState.Loading)
+        _equipsList.postValue(listOf())
+        val result = zonesRepository.startCheckZone(zoneId)
+        val equipList = if (result is Result.Success) {
+            _zoneName.postValue(UiState.Success(result.value.zoneName))
+            result.value.spaces.map {
+                val findEquipStatus =
+                    result.value.equip.find { equip -> equip.space == it }?.status
+                        ?: EquipStatus.UNKNOWN
+                EquipState(it, findEquipStatus)
+            }
+        } else {
+            _zoneName.postValue(UiState.Error())
+            listOf()
+        }
+        _equipsList.postValue(equipList)
     }
 
     fun checkExistEquipment() {
@@ -200,5 +221,17 @@ class MainViewModel @Inject constructor(
         _rfidStatus.postValue(RfidStatus.Idle)
         _equipExist.postValue(null)
         _playSound.postValue(null)
+    }
+
+    private fun enableSocketListeners() {
+        socketRepository.equipmentUpdateEvent.observe(viewModelScope, ::handleEquipmentUpdate)
+        socketRepository.pickerSocketConnectEvent.observe(viewModelScope) { resetParams() }
+    }
+
+    private fun handleEquipmentUpdate(equipState: EquipState) {
+        val newList =
+            _equipsList.value?.map { if (equipState.space == it.space) equipState else it }
+                ?: return
+        _equipsList.postValue(newList)
     }
 }

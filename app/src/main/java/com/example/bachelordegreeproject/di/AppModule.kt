@@ -2,7 +2,11 @@ package com.example.bachelordegreeproject.di
 
 import android.content.Context
 import android.content.Intent
+import com.example.bachelordegreeproject.core.network.socket.SocketClient
+import com.example.bachelordegreeproject.core.network.socket.factory.SocketFactory
 import com.example.bachelordegreeproject.core.receiver.RingtoneReceiver
+import com.example.bachelordegreeproject.data.remote.mappers.EquipStateMapper
+import com.example.bachelordegreeproject.data.remote.repository.socket.SocketRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +41,21 @@ internal class AppModule {
             action = RingtoneReceiver.INTENT_ACTION
         }
     }
+
+    @Provides
+    @Singleton
+    fun provideSocketClient(): SocketClient = SocketClient(
+        socketFactory = SocketFactory.Client(),
+        loggingPrefix = SocketFactory.Client.LOGGING_PREFIX
+    )
+
+    @Provides
+    @Singleton
+    fun providesSocketRepository(
+        socketClient: SocketClient,
+        equipStateMapper: EquipStateMapper,
+        @IoDispatcher coroutineScope: CoroutineScope
+    ): SocketRepository = SocketRepository(socketClient, equipStateMapper, coroutineScope)
 }
 
 @Retention(AnnotationRetention.BINARY)

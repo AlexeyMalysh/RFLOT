@@ -60,7 +60,7 @@ fun CheckPointsScreen(
     var showInfoByStatus by remember { mutableStateOf<Boolean?>(null) }
 
     when (rfidInfo) {
-        is RfidStatus.Success -> viewModel.convertEquipsList()
+        is RfidStatus.Success -> {}//viewModel.convertEquipsList()
         is RfidStatus.Failure -> CustomToast(stringResource(id = (rfidInfo as RfidStatus.Failure).failure))
         is RfidStatus.Error -> CustomToast(
             stringResource(id = (rfidInfo as RfidStatus.Error).error),

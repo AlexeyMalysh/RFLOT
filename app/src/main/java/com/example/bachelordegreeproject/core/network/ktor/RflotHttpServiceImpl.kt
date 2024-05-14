@@ -1,7 +1,7 @@
-package com.example.bachelordegreeproject.core.network
+package com.example.bachelordegreeproject.core.network.ktor
 
-import com.example.bachelordegreeproject.core.util.constants.RflotEndpoint
-import com.example.bachelordegreeproject.data.remote.request.AuthRequestModel
+import com.example.bachelordegreeproject.core.util.constants.RflotUrl
+import com.example.bachelordegreeproject.data.remote.request.AuthByLoginRequestModel
 import com.example.bachelordegreeproject.data.remote.request.CheckEquipRequestModel
 import com.example.bachelordegreeproject.data.remote.request.CheckZoneRequestModel
 import com.example.bachelordegreeproject.data.remote.request.GetZonesRequestModel
@@ -10,8 +10,10 @@ import com.example.bachelordegreeproject.data.remote.response.AuthResponseModel
 import com.example.bachelordegreeproject.data.remote.response.CheckEquipResponseModel
 import com.example.bachelordegreeproject.data.remote.response.CheckZoneResponseModel
 import com.example.bachelordegreeproject.data.remote.response.GetZonesResponseModel
-import com.example.bachelordegreeproject.data.remote.response.SessionResponseModel
+import com.example.bachelordegreeproject.data.remote.response.AuthPlaneResponseModel
 import com.example.bachelordegreeproject.core.util.constants.Result
+import com.example.bachelordegreeproject.data.remote.request.AuthByRfidRequestModel
+import com.example.bachelordegreeproject.data.remote.request.ConnectToHubRequestModel
 import com.example.bachelordegreeproject.di.IoDispatcher
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -27,12 +29,12 @@ class RflotHttpServiceImpl @Inject constructor(
     @IoDispatcher private val coroutineDispatcher: CoroutineDispatcher
 ) : RflotHttpService {
 
-    override suspend fun auth(authParams: AuthRequestModel): Result<AuthResponseModel> =
+    override suspend fun authByLogin(authParams: AuthByLoginRequestModel): Result<AuthResponseModel> =
         withContext(coroutineDispatcher) {
             return@withContext try {
                 Result.Success(
                     httpClient().post {
-                        url(path = RflotEndpoint.auth)
+                        url(path = RflotUrl.authByLogin)
                         setBody(authParams)
                     }.body()
                 )
@@ -42,12 +44,27 @@ class RflotHttpServiceImpl @Inject constructor(
             }
         }
 
-    override suspend fun startSession(params: StartSessionRequestModel): Result<SessionResponseModel> =
+    override suspend fun authByRfid(authParams: AuthByRfidRequestModel): Result<AuthResponseModel> =
         withContext(coroutineDispatcher) {
             return@withContext try {
                 Result.Success(
                     httpClient().post {
-                        url(path = RflotEndpoint.getCheck)
+                        url(path = RflotUrl.authByRfid)
+                        setBody(authParams)
+                    }.body()
+                )
+            } catch (e: Exception) {
+                Timber.e("Failed to auth: $e")
+                Result.Fail(e)
+            }
+        }
+
+    override suspend fun startSession(params: StartSessionRequestModel): Result<AuthPlaneResponseModel> =
+        withContext(coroutineDispatcher) {
+            return@withContext try {
+                Result.Success(
+                    httpClient().post {
+                        url(path = RflotUrl.authPlane)
                         setBody(params)
                     }.body()
                 )
@@ -62,7 +79,7 @@ class RflotHttpServiceImpl @Inject constructor(
             return@withContext try {
                 Result.Success(
                     httpClient().post {
-                        url(path = RflotEndpoint.getZones)
+                        url(path = RflotUrl.getZones)
                         setBody(params)
                     }.body()
                 )
@@ -77,7 +94,7 @@ class RflotHttpServiceImpl @Inject constructor(
             return@withContext try {
                 Result.Success(
                     httpClient().post {
-                        url(path = RflotEndpoint.checkZone)
+                        url(path = RflotUrl.checkZone)
                         setBody(params)
                     }.body()
                 )
@@ -93,12 +110,43 @@ class RflotHttpServiceImpl @Inject constructor(
             return@withContext try {
                 Result.Success(
                     httpClient().post {
-                        url(path = RflotEndpoint.checkEquip)
+                        url(path = RflotUrl.checkEquip)
                         setBody(params)
                     }.body()
                 )
             } catch (e: Exception) {
                 Timber.e("Failed to check equip: $e")
+                Result.Fail(e)
+            }
+        }
+
+    // TODO
+    override suspend fun closeSession(params: StartSessionRequestModel): Result<Unit> =
+        withContext(coroutineDispatcher) {
+            return@withContext try {
+                Result.Success(
+                    httpClient().post {
+                        url(path = RflotUrl.closeZone)
+                        setBody(params)
+                    }.body()
+                )
+            } catch (e: Exception) {
+                Timber.e("Failed to start session: $e")
+                Result.Fail(e)
+            }
+    }
+
+    override suspend fun connectToHub(params: ConnectToHubRequestModel): Result<Unit> =
+        withContext(coroutineDispatcher) {
+            return@withContext try {
+                Result.Success(
+                    httpClient().post {
+                        url(path = RflotUrl.socketPath)
+                        setBody(params)
+                    }.body()
+                )
+            } catch (e: Exception) {
+                Timber.e("Failed to connect to hub: $e")
                 Result.Fail(e)
             }
         }

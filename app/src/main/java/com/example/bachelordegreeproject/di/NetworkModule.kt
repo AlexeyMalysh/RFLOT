@@ -1,7 +1,7 @@
 package com.example.bachelordegreeproject.di
 
 import androidx.annotation.VisibleForTesting
-import com.example.bachelordegreeproject.core.util.constants.RflotEndpoint
+import com.example.bachelordegreeproject.core.util.constants.RflotUrl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ open class NetworkModule {
     protected open fun internalHttpClientEngine(): HttpClientEngineFactory<*> = Android
 
     @VisibleForTesting
-    internal open val baseUrl = RflotEndpoint.baseUrl
+    internal open val baseUrl = RflotUrl.baseUrl
 
     @Provides
     @ApiUrl

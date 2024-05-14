@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.example.bachelordegreeproject.R.string
 import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.core.util.constants.UIConst
+import com.example.bachelordegreeproject.core.util.constants.UiState
 import com.example.bachelordegreeproject.domain.models.Zones
 import com.example.bachelordegreeproject.presentation.component.CustomToast
 import com.example.bachelordegreeproject.presentation.component.GradientButton
@@ -46,6 +47,7 @@ fun ZoneSelectionScreen(
     }
 
     val zones: Result<Zones>? by viewModel.zoneList.observeAsState()
+    val zoneName: UiState? by viewModel.zoneName.observeAsState()
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -54,6 +56,21 @@ fun ZoneSelectionScreen(
                 color = Color.Transparent,
             )
     ) {
+        when (zoneName) {
+            is UiState.Loading -> {
+                CustomProgress()
+            }
+
+            is UiState.Success -> {
+                navController.navigate(
+                    Screen.CheckPointsScreen.withArgs(
+                        (zoneName as UiState.Success).text ?: ""
+                    )
+                )
+            }
+
+            else -> {}
+        }
 
         when (zones) {
             is Result.Loading -> {
@@ -136,11 +153,7 @@ fun ZoneSelectionScreen(
                                             zoneName = info.name,
                                             reviewersName = info.reviewersName
                                         ) {
-                                            navController.navigate(
-                                                Screen.CheckPointsScreen.withArgs(
-                                                    info.name
-                                                )
-                                            )
+                                            viewModel.startCheckZone(info.idZone)
                                         }
                                         Spacer(modifier = Modifier.height(10.dp))
                                     }

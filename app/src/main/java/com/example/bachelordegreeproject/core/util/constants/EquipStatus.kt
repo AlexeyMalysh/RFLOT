@@ -3,13 +3,13 @@ package com.example.bachelordegreeproject.core.util.constants
 import androidx.annotation.ColorRes
 import com.example.bachelordegreeproject.R
 
-enum class EquipStatus(val value: String, @ColorRes val color: Int) {
-    OK("Ok", R.color.equipStatusOk),
-    DateFail("DateFail", R.color.equipStatusBad),
-    UNKNOWN("Unknown", R.color.equipStatusUnknown);
+enum class EquipStatus(val value:Int, val status: String, @ColorRes val color: Int) {
+    OK(0, "Ok", R.color.equipStatusOk),
+    DateFail(1, "DateFail", R.color.equipStatusBad),
+    UNKNOWN(2, "Unknown", R.color.equipStatusUnknown);
 
     companion object {
-        fun findByValue(value: String): EquipStatus {
+        fun findByValue(value: Int): EquipStatus {
             return entries.firstOrNull { it.value == value } ?: UNKNOWN
         }
     }

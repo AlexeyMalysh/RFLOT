@@ -93,6 +93,9 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
 
+    //Socket
+    implementation("io.socket:socket.io-client:2.1.0")
+
     //Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 

@@ -9,6 +9,7 @@ import javax.inject.Singleton
 @Singleton
 class ZoneInfoMapper @Inject constructor() : Mapper<ZoneResponseModel, ZoneInfo> {
     override fun map(input: ZoneResponseModel): ZoneInfo = ZoneInfo(
+        idZone = input.idZone,
         name = input.name,
         reviewersName = input.fullNameChecker
     )

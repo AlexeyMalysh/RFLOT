@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class EquipStateResponseModel(
     val space: String,
-    val status: String
+    val status: Int
 )

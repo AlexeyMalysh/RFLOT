@@ -1,4 +1,4 @@
-package com.example.bachelordegreeproject.core.network
+package com.example.bachelordegreeproject.core.network.ktor
 
 import com.example.bachelordegreeproject.di.ApiUrl
 import io.ktor.client.HttpClient
@@ -25,11 +25,9 @@ class RflotHttpClient @Inject constructor(
     @ApiUrl private val baseUrl: String,
     private val engine: HttpClientEngineFactory<*>,
 ) {
-
     private val client by lazy {
         HttpClient(engine) {
             expectSuccess = true
-
             install(ContentNegotiation) {
                 json(
                     Json {
@@ -40,7 +38,6 @@ class RflotHttpClient @Inject constructor(
                     }
                 )
             }
-
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
@@ -49,13 +46,11 @@ class RflotHttpClient @Inject constructor(
                 }
                 level = LogLevel.ALL
             }
-
             install(HttpTimeout) {
-                connectTimeoutMillis = 20.seconds.inWholeMilliseconds
-                requestTimeoutMillis = 20.seconds.inWholeMilliseconds
-                socketTimeoutMillis = 20.seconds.inWholeMilliseconds
+                connectTimeoutMillis = 10.seconds.inWholeMilliseconds
+                requestTimeoutMillis = 10.seconds.inWholeMilliseconds
+                socketTimeoutMillis = 10.seconds.inWholeMilliseconds
             }
-
             install(DefaultRequest) {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
                 url {
@@ -65,6 +60,5 @@ class RflotHttpClient @Inject constructor(
             }
         }
     }
-
     operator fun invoke(): HttpClient = client
 }

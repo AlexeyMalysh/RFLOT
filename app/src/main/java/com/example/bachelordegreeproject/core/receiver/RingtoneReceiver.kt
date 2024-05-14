@@ -9,7 +9,6 @@ import com.example.bachelordegreeproject.R
 import timber.log.Timber
 
 class RingtoneReceiver : BroadcastReceiver() {
-
     override fun onReceive(context: Context, intent: Intent) {
         intent.action?.let { action ->
             if (action == INTENT_ACTION) {

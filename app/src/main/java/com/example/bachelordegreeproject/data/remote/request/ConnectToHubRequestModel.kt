@@ -3,7 +3,8 @@ package com.example.bachelordegreeproject.data.remote.request
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AuthRequestModel(
-    val login: String,
-    val pass: String?
+data class ConnectToHubRequestModel(
+    val idReport: String,
+    val idZone: String,
+    val idUser: String
 )

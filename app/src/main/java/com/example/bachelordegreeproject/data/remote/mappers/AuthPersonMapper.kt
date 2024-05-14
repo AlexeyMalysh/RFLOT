@@ -9,6 +9,6 @@ import javax.inject.Singleton
 @Singleton
 class AuthPersonMapper @Inject constructor() : Mapper<AuthResponseModel, AuthPerson> {
     override fun map(input: AuthResponseModel): AuthPerson = AuthPerson(
-        message = input.message
+        userId = input.userId
     )
 }

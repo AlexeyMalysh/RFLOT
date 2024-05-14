@@ -1,6 +1,6 @@
 package com.example.bachelordegreeproject.data.remote.repository.equip
 
-import com.example.bachelordegreeproject.core.network.RflotHttpService
+import com.example.bachelordegreeproject.core.network.ktor.RflotHttpService
 import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.data.local.repository.SessionRepository
 import com.example.bachelordegreeproject.data.remote.mappers.EquipInfoMapper

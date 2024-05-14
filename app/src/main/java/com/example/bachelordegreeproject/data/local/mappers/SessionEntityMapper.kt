@@ -9,10 +9,14 @@ import javax.inject.Singleton
 @Singleton
 class SessionEntityMapper @Inject constructor() : Mapper<SessionEntity, Session> {
     override fun map(input: SessionEntity) = Session(
-        reportId = input.reportId
+        reportId = input.reportId,
+        userId = input.userId,
+        planeId = input.planeId
     )
 
     override fun reverse(input: Session) = SessionEntity(
-        reportId = input.reportId
+        reportId = input.reportId,
+        userId = input.userId,
+        planeId = input.planeId
     )
 }

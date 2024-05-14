@@ -6,5 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "session")
 data class SessionEntity(
     @PrimaryKey val id: Int = 0,
-    val reportId: String
+    val reportId: String?,
+    val userId: String?,
+    val planeId: String?
 )

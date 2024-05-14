@@ -1,7 +1,7 @@
 package com.example.bachelordegreeproject.di
 
-import com.example.bachelordegreeproject.core.network.RflotHttpService
-import com.example.bachelordegreeproject.core.network.RflotHttpServiceImpl
+import com.example.bachelordegreeproject.core.network.ktor.RflotHttpService
+import com.example.bachelordegreeproject.core.network.ktor.RflotHttpServiceImpl
 import com.example.bachelordegreeproject.core.nfc.NfcReader
 import com.example.bachelordegreeproject.core.nfc.NfcReaderImpl
 import com.example.bachelordegreeproject.data.remote.repository.auth.AuthRepository

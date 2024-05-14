@@ -11,6 +11,7 @@ class EquipByZoneMapper @Inject constructor(private val equipStateMapper: EquipS
     Mapper<CheckZoneResponseModel, EquipByZoneInfo> {
     override fun map(input: CheckZoneResponseModel): EquipByZoneInfo = EquipByZoneInfo(
         zoneName = input.name,
-        equip = input.equipReport.map(equipStateMapper::map)
+        equip = input.equipResults.map(equipStateMapper::map),
+        spaces = input.spaces
     )
 }

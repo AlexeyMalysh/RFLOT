@@ -62,10 +62,7 @@ fun LoginPage(
             )
     ) {
         when (rfidInfo) {
-            is RfidStatus.Success -> viewModel.authPerson(
-                "admin",
-                "admin"
-            ) // TODO delete mock value
+            is RfidStatus.Success -> viewModel.authPersonByRfid((rfidInfo as RfidStatus.Success).rfid)
             is RfidStatus.Failure -> CustomToast(stringResource(id = (rfidInfo as RfidStatus.Failure).failure))
             is RfidStatus.Error -> CustomToast(
                 stringResource(id = (rfidInfo as RfidStatus.Error).error),
@@ -143,7 +140,7 @@ fun LoginPage(
 
                 GradientButton(
                     onClickAction = {
-                        viewModel.authPerson(
+                        viewModel.authPersonByLogin(
                             login, password
                         )
                     },
