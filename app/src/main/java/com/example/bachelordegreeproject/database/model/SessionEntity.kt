@@ -8,5 +8,6 @@ data class SessionEntity(
     @PrimaryKey val id: Int = 0,
     val reportId: String?,
     val userId: String?,
-    val planeId: String?
+    val planeId: String?,
+    val zoneId: String?
 )

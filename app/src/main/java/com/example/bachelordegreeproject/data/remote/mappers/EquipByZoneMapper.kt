@@ -12,6 +12,6 @@ class EquipByZoneMapper @Inject constructor(private val equipStateMapper: EquipS
     override fun map(input: CheckZoneResponseModel): EquipByZoneInfo = EquipByZoneInfo(
         zoneName = input.name,
         equip = input.equipResults.map(equipStateMapper::map),
-        spaces = input.spaces
+        spaces = input.spaces.sorted()
     )
 }

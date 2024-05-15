@@ -67,6 +67,7 @@ fun ZoneSelectionScreen(
                         (zoneName as UiState.Success).text ?: ""
                     )
                 )
+                viewModel.resetParams()
             }
 
             else -> {}
@@ -151,7 +152,7 @@ fun ZoneSelectionScreen(
                                     item {
                                         ZoneCard(
                                             zoneName = info.name,
-                                            reviewersName = info.reviewersName
+                                            reviewersName = info.reviewersName ?: listOf()
                                         ) {
                                             viewModel.startCheckZone(info.idZone)
                                         }

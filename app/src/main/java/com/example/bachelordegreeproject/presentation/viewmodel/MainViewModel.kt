@@ -95,30 +95,30 @@ class MainViewModel @Inject constructor(
     }
 
     // TODO delete
-//    var count = 0
-//    var lastRfid: String? = null
-//    fun convertEquipsList() {
-//        val equips = _equipsList.value?.toMutableList() ?: return
-//        if (count == 0 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
-//            val equip = equips.find { it.space == "A2" } ?: return
-//            val index = equips.indexOf(equip)
-//            equips[index] = equip.copy(status = EquipStatus.OK)
-//            _equipsList.postValue(equips)
-//        } else if (count == 1 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
-//            val equip = equips.find { it.space == "A3" } ?: return
-//            val index = equips.indexOf(equip)
-//            equips[index] = equip.copy(status = EquipStatus.DateFail)
-//            _equipsList.postValue(equips)
-//        } else if (count == 2 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
-//            val equip = equips.find { it.space == "A4" } ?: return
-//            val index = equips.indexOf(equip)
-//            equips[index] = equip.copy(status = EquipStatus.DateFail)
-//            _equipsList.postValue(equips)
-//        }
-//        if (_rfidStatus.value is RfidStatus.Success) lastRfid =
-//            (_rfidStatus.value as RfidStatus.Success).rfid
-//        count++
-//    }
+    var count = 0
+    var lastRfid: String? = null
+    fun convertEquipsList() {
+        val equips = _equipsList.value?.toMutableList() ?: return
+        if (count == 0 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
+            val equip = equips.find { it.space == "A2" } ?: return
+            val index = equips.indexOf(equip)
+            equips[index] = equip.copy(status = EquipStatus.OK)
+            _equipsList.postValue(equips)
+        } else if (count == 1 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
+            val equip = equips.find { it.space == "A3" } ?: return
+            val index = equips.indexOf(equip)
+            equips[index] = equip.copy(status = EquipStatus.DateFail)
+            _equipsList.postValue(equips)
+        } else if (count == 2 && _rfidStatus.value is RfidStatus.Success && (_rfidStatus.value as RfidStatus.Success).rfid != lastRfid) {
+            val equip = equips.find { it.space == "A4" } ?: return
+            val index = equips.indexOf(equip)
+            equips[index] = equip.copy(status = EquipStatus.DateFail)
+            _equipsList.postValue(equips)
+        }
+        if (_rfidStatus.value is RfidStatus.Success) lastRfid =
+            (_rfidStatus.value as RfidStatus.Success).rfid
+        count++
+    }
 
     fun authPersonByLogin(login: String, password: String?) = viewModelScope.launch {
         _rfidStatus.postValue(RfidStatus.Idle)
@@ -146,7 +146,7 @@ class MainViewModel @Inject constructor(
         _authResult.postValue(uiState)
     }
 
-    fun authPlane(planeId: String, typeCheck: String) = viewModelScope.launch {
+    fun authPlane(planeId: String, typeCheck: Int) = viewModelScope.launch {
         _rfidStatus.postValue(RfidStatus.Idle)
         _authPlaneResult.postValue(UiState.Loading)
         val uiState = when (val result = authRepository.authPlane(planeId, typeCheck)) {
@@ -198,19 +198,23 @@ class MainViewModel @Inject constructor(
         if (_rfidStatus.value is RfidStatus.Success) {
             viewModelScope.launch {
                 val result =
-                    equipRepository.checkEquip((_rfidStatus.value as RfidStatus.Success).rfid)
+                    equipRepository.checkExistEquip((_rfidStatus.value as RfidStatus.Success).rfid)
                 if (result is Result.Success) {
                     result.value.let { _equipExist.postValue(it) }
                     _playSound.postValue(alarmIntent)
                 } else {
+                    _equipExist.postValue(null)
                     _playSound.postValue(null)
                 }
                 _rfidStatus.postValue(RfidStatus.Idle)
             }
-            // TODO delete
-            _equipExist.postValue(EquipInfo("Инструкция", "A2", "", ""))
-            _playSound.postValue(alarmIntent)
-            //
+        }
+    }
+
+    fun checkEquipment(rfid: String) {
+        viewModelScope.launch {
+            equipRepository.checkEquip(rfid, 0)
+            _rfidStatus.postValue(RfidStatus.Idle)
         }
     }
 
@@ -221,6 +225,11 @@ class MainViewModel @Inject constructor(
         _rfidStatus.postValue(RfidStatus.Idle)
         _equipExist.postValue(null)
         _playSound.postValue(null)
+        _zoneName.postValue(UiState.Idle)
+    }
+
+    fun resetRfidStatus() {
+        _rfidStatus.postValue(RfidStatus.Idle)
     }
 
     private fun enableSocketListeners() {

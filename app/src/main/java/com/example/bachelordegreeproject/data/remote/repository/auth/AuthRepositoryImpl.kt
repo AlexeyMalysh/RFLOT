@@ -27,7 +27,8 @@ class AuthRepositoryImpl @Inject constructor(
             sessionRepository.getSession()?.copy(userId = result.value.userId) ?: Session(
                 userId = result.value.userId,
                 reportId = null,
-                planeId = null
+                planeId = null,
+                zoneId = null
             )
         )
         return result
@@ -41,7 +42,8 @@ class AuthRepositoryImpl @Inject constructor(
             sessionRepository.getSession()?.copy(userId = result.value.userId) ?: Session(
                 userId = result.value.userId,
                 reportId = null,
-                planeId = null
+                planeId = null,
+                zoneId = null
             )
         )
         return result
@@ -49,7 +51,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun authPlane(
         planeId: String,
-        typeCheck: String
+        typeCheck: Int
     ): Result<AuthPlane> {
         val userId = sessionRepository.getSession()?.userId ?: return Result.Fail()
         val params = StartSessionRequestModel(
@@ -59,10 +61,12 @@ class AuthRepositoryImpl @Inject constructor(
         )
         val result = rflotHttpService.startSession(params).map { authPlaneMapper.map(it) }
         if (result is Result.Success) sessionRepository.setSession(
-            sessionRepository.getSession()?.copy(userId = result.value.reportId) ?: Session(
+            sessionRepository.getSession()
+                ?.copy(reportId = result.value.reportId, planeId = planeId) ?: Session(
                 reportId = result.value.reportId,
                 userId = null,
-                planeId = planeId
+                planeId = planeId,
+                zoneId = null
             )
         )
         return result

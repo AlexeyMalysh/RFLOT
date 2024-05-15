@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CheckEquipRequestModel(
-    val RfId: String,
-    val idReport: String
+    val idEquip: String,
+    val statusEquip: Int,
+    val idReport: String,
+    val idZone: String,
+    val idUser: String
 )

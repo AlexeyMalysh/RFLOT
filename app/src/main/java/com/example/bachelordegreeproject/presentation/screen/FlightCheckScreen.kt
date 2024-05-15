@@ -124,7 +124,7 @@ fun FlightCheckScreen(
                         checkType = CheckType.PreflightCheck
                         viewModel.authPlane(
                             planeId = planeId,
-                            typeCheck = CheckType.PreflightCheck.value
+                            typeCheck = CheckType.PreflightCheck.code
                         )
                     })
                 FlightCheckCard(
@@ -138,7 +138,7 @@ fun FlightCheckScreen(
                         checkType = CheckType.PostflightCheck
                         viewModel.authPlane(
                             planeId = planeId,
-                            typeCheck = CheckType.PostflightCheck.value
+                            typeCheck = CheckType.PostflightCheck.code
                         )
                     })
                 FlightCheckCard(
@@ -152,7 +152,7 @@ fun FlightCheckScreen(
                         checkType = CheckType.ExitCheck
                         viewModel.authPlane(
                             planeId = planeId,
-                            typeCheck = CheckType.ExitCheck.value
+                            typeCheck = CheckType.ExitCheck.code
                         )
                     })
 

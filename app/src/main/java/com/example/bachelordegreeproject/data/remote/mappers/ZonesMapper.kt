@@ -11,6 +11,6 @@ class ZonesMapper @Inject constructor(
     private val zoneInfoMapper: ZoneInfoMapper
 ) : Mapper<GetZonesResponseModel, Zones> {
     override fun map(input: GetZonesResponseModel): Zones = Zones(
-        zonesInfo = input.zonesInfo.map(zoneInfoMapper::map)
+        zonesInfo = input.zonesName.map(zoneInfoMapper::map)
     )
 }

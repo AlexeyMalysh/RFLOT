@@ -7,5 +7,5 @@ import com.example.bachelordegreeproject.domain.models.AuthPlane
 interface AuthRepository {
     suspend fun authByLogin(login: String, password: String?): Result<AuthPerson>
     suspend fun authByRfid(rfid: String): Result<AuthPerson>
-    suspend fun authPlane(planeId: String, typeCheck: String): Result<AuthPlane>
+    suspend fun authPlane(planeId: String, typeCheck: Int): Result<AuthPlane>
 }

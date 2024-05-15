@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class CheckEquipResponseModel(
     val name: String,
     val space: String,
-    val type: String,
-    val lastStatus: String
+    val type: Int,
+    val lastStatus: Int
 )

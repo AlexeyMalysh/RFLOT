@@ -47,9 +47,7 @@ class SessionRepositoryTest {
         val session = Session("token", "userId", "planeId")
         `when`(sessionDao.getSession()).thenReturn(sessionEntity)
         `when`(sessionEntityMapper.map(sessionEntity)).thenReturn(session)
-
         val result = sessionRepository.getSession()
-
         assert(result == session)
     }
     @Test
@@ -57,16 +55,13 @@ class SessionRepositoryTest {
         val session = Session("token", "userId", "planeId")
         val sessionEntity = SessionEntity(0, "token", "userId", "planeId")
         `when`(sessionEntityMapper.reverse(session)).thenReturn(sessionEntity)
-
         sessionRepository.setSession(session)
-
         verify(sessionDao).setSession(sessionEntity)
     }
 
     @Test
     fun `deleteSessions should clear sessions from database`() = runBlocking {
         sessionRepository.deleteSessions()
-
         verify(sessionDao).deleteAllSessions()
     }
 
@@ -74,10 +69,9 @@ class SessionRepositoryTest {
     fun `sessionState should emit new value when session changes`() = runBlocking {
         val observer = mock(Observer::class.java) as Observer<Session?>
         sessionRepository.sessionState.observeForever(observer)
-
         val session = Session("token", "userId", "planeId")
         sessionRepository.setSession(session)
-
         verify(observer).onChanged(session)
     }
 }
+

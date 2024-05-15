@@ -46,8 +46,17 @@ fun ZoneCard(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.End
             ) {
-                reviewersName.forEach { name -> Text(text = name) }
+                var countReviews = 1
+                reviewersName.forEach { name ->
+                    Text(text = "$countReviews. ${converLongName(name)}")
+                    countReviews++
+                }
             }
         }
     }
 }
+
+fun converLongName(name: String): String = if (name.length > 10) {
+    "${name.substring(10)}.."
+} else name
+

@@ -13,7 +13,10 @@ import com.example.bachelordegreeproject.data.remote.response.GetZonesResponseMo
 import com.example.bachelordegreeproject.data.remote.response.AuthPlaneResponseModel
 import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.data.remote.request.AuthByRfidRequestModel
+import com.example.bachelordegreeproject.data.remote.request.CheckExistEquipRequestModel
 import com.example.bachelordegreeproject.data.remote.request.ConnectToHubRequestModel
+import com.example.bachelordegreeproject.data.remote.response.GetCheckEquipResponseModel
+import com.example.bachelordegreeproject.data.remote.response.StartCheckZoneResponseModel
 import com.example.bachelordegreeproject.di.IoDispatcher
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -89,7 +92,7 @@ class RflotHttpServiceImpl @Inject constructor(
             }
         }
 
-    override suspend fun checkZone(params: CheckZoneRequestModel): Result<CheckZoneResponseModel> =
+    override suspend fun checkZone(params: CheckZoneRequestModel): Result<StartCheckZoneResponseModel> =
         withContext(coroutineDispatcher) {
             return@withContext try {
                 Result.Success(
@@ -120,6 +123,21 @@ class RflotHttpServiceImpl @Inject constructor(
             }
         }
 
+    override suspend fun checkExistEquip(params: CheckExistEquipRequestModel): Result<GetCheckEquipResponseModel> =
+        withContext(coroutineDispatcher) {
+            return@withContext try {
+                Result.Success(
+                    httpClient().post {
+                        url(path = RflotUrl.checkExistEquip)
+                        setBody(params)
+                    }.body()
+                )
+            } catch (e: Exception) {
+                Timber.e("Failed to check exist equip: $e")
+                Result.Fail(e)
+            }
+        }
+
     // TODO
     override suspend fun closeSession(params: StartSessionRequestModel): Result<Unit> =
         withContext(coroutineDispatcher) {
@@ -134,7 +152,7 @@ class RflotHttpServiceImpl @Inject constructor(
                 Timber.e("Failed to start session: $e")
                 Result.Fail(e)
             }
-    }
+        }
 
     override suspend fun connectToHub(params: ConnectToHubRequestModel): Result<Unit> =
         withContext(coroutineDispatcher) {

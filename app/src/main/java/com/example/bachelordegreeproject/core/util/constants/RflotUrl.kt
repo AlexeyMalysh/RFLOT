@@ -22,8 +22,11 @@ object RflotUrl {
     val closeZone: String
         get() = "zone/end-check"
 
+    val checkExistEquip: String
+        get() = "/equip/exit-check"
+
     val checkEquip: String
-        get() = "/check-equip"
+        get() = "/equip/check"
 
     //SOCKET
     val socketPath: String

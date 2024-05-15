@@ -11,12 +11,14 @@ class SessionEntityMapper @Inject constructor() : Mapper<SessionEntity, Session>
     override fun map(input: SessionEntity) = Session(
         reportId = input.reportId,
         userId = input.userId,
-        planeId = input.planeId
+        planeId = input.planeId,
+        zoneId = input.zoneId
     )
 
     override fun reverse(input: Session) = SessionEntity(
         reportId = input.reportId,
         userId = input.userId,
-        planeId = input.planeId
+        planeId = input.planeId,
+        zoneId = input.zoneId
     )
 }
