@@ -1,6 +1,7 @@
 package com.example.bachelordegreeproject.core.network.socket
 
 import com.example.bachelordegreeproject.core.network.socket.factory.SocketFactory
+import com.example.bachelordegreeproject.core.util.constants.RflotUrl
 import com.example.bachelordegreeproject.core.util.constants.SocketEvent
 import io.socket.client.Manager
 import io.socket.client.Socket
@@ -19,18 +20,43 @@ class SocketClient @Inject constructor(
     private var socket: Socket? = null
     private val listeners = HashMap<String, Emitter.Listener>()
     private val socketListeners = HashMap<String, () -> Unit>()
-
     fun subscribe(token: String) {
         val socket = createSocket(token).also { socket = it } ?: return
         subscribeInternal(socket)
         socket.connect()
     }
+    private fun subscribeInternal(socket: Socket) {
+        subscribeConnectionEvent(socket)
 
+        listeners.forEach {
+            socket.on(it.key, it.value)
+        }
+    }
+    private fun createSocket(token: String): Socket? {
+        return socketFactory.create(
+            "${RflotUrl.baseUrl}/${RflotUrl.socketPath}",
+            token,
+            SocketEvent.CONNECT.value
+        )
+    }
     fun unsubscribe() {
         socket?.disconnect()
         socket = null
     }
 
+
+    private fun subscribeConnectionEvent(socket: Socket) {
+        arrayOf(
+            Manager.EVENT_OPEN,
+            Manager.EVENT_CLOSE,
+            Manager.EVENT_ERROR
+        ).forEach { event ->
+            socket.io().on(event) {
+                socketListeners[event]?.invoke()
+                log(event)
+            }
+        }
+    }
     inline fun <reified T> on(event: SocketEvent, noinline listener: (T) -> Unit) {
         on(event.value, listener)
     }
@@ -68,31 +94,6 @@ class SocketClient @Inject constructor(
         socketListeners[event]?.invoke()
     }
 
-    private fun createSocket(token: String): Socket? {
-        // TODO
-        return socketFactory.create("config.socketUri", token, "config.socketPathLocation")
-    }
-
-    private fun subscribeInternal(socket: Socket) {
-        subscribeConnectionEvent(socket)
-
-        listeners.forEach {
-            socket.on(it.key, it.value)
-        }
-    }
-
-    private fun subscribeConnectionEvent(socket: Socket) {
-        arrayOf(
-            Manager.EVENT_OPEN,
-            Manager.EVENT_CLOSE,
-            Manager.EVENT_ERROR
-        ).forEach { event ->
-            socket.io().on(event) {
-                socketListeners[event]?.invoke()
-                log(event)
-            }
-        }
-    }
 
     private fun log(text: Any) {
         Timber.d("${loggingPrefix}_ $text")

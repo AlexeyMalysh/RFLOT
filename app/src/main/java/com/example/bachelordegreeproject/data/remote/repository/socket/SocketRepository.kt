@@ -23,19 +23,16 @@ class SocketRepository @Inject constructor(
 ) {
     private var isSubscribed = false
     private var isPickerSocketConnectBroken = false
-
     private val equipmentUpdateSocketFlow = MultipleEventFlow<EquipStateResponseModel>()
-    val pickerSocketConnectEvent = MultipleEventFlow<Unit>()
+    val equipmentSocketConnectEvent = MultipleEventFlow<Unit>()
     val equipmentUpdateEvent = MultipleEventFlow<EquipState>()
 
     init {
         socketClient.on(SocketEvent.EQUIPMENT_UPDATE, ::onEquipmentUpdate)
         socketClient.onSocketEvent(SocketEvent.CONNECT, ::onSocketConnect)
         socketClient.onSocketEvent(SocketEvent.DISCONNECT) { isPickerSocketConnectBroken = true }
-
         launchEquipmentUpdateSocketFlow()
     }
-
     fun subscribe(): Boolean {
         if (isSubscribed) return false
         socketClient.subscribe("")
@@ -43,19 +40,12 @@ class SocketRepository @Inject constructor(
         isPickerSocketConnectBroken = false
         return true
     }
-
     fun unsubscribe(): Boolean {
         if (!isSubscribed) return false
         socketClient.unsubscribe()
         isSubscribed = false
         return true
     }
-
-    // Used for tests
-    fun emitEquipmentUpdate(event: EquipStateResponseModel) {
-        equipmentUpdateSocketFlow.tryEmit(event)
-    }
-
     private fun launchEquipmentUpdateSocketFlow() {
         equipmentUpdateSocketFlow
             .map(equipmentStateMapper::map)
@@ -68,11 +58,10 @@ class SocketRepository @Inject constructor(
     private fun onEquipmentUpdate(equipment: EquipStateResponseModel) {
         equipmentUpdateSocketFlow.tryEmit(equipment)
     }
-
     private fun onSocketConnect() {
         if (isPickerSocketConnectBroken) {
             isPickerSocketConnectBroken = false
-            pickerSocketConnectEvent.tryEmit(Unit)
+            equipmentSocketConnectEvent.tryEmit(Unit)
         }
     }
 }

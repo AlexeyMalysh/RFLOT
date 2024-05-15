@@ -2,7 +2,7 @@ package com.example.bachelordegreeproject.core.util.constants
 
 object RflotUrl {
     val baseUrl: String
-        get() = "openlibrary.org"
+        get() = "10.147.17.151:5031"
 
     val authByLogin: String
         get() = "/auth/login-and-password"

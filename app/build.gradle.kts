@@ -107,4 +107,11 @@ dependencies {
     implementation ("androidx.room:room-runtime:2.6.1")
     implementation( "androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
+
+    //Test
+    testImplementation("org.mockito:mockito-core:4.0.0")
+    testImplementation ("org.mockito:mockito-inline:2.13.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1-Beta")
+    androidTestImplementation ("androidx.arch.core:core-testing:2.1.0")
+    testImplementation ("androidx.arch.core:core-testing:2.1.0")
 }

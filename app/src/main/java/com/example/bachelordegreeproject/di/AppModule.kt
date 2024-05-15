@@ -45,8 +45,8 @@ internal class AppModule {
     @Provides
     @Singleton
     fun provideSocketClient(): SocketClient = SocketClient(
-        socketFactory = SocketFactory.Client(),
-        loggingPrefix = SocketFactory.Client.LOGGING_PREFIX
+        socketFactory = SocketFactory.Hostess(),
+        loggingPrefix = SocketFactory.Hostess.LOGGING_PREFIX
     )
 
     @Provides

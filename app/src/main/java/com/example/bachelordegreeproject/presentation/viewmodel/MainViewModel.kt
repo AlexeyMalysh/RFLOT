@@ -225,7 +225,7 @@ class MainViewModel @Inject constructor(
 
     private fun enableSocketListeners() {
         socketRepository.equipmentUpdateEvent.observe(viewModelScope, ::handleEquipmentUpdate)
-        socketRepository.pickerSocketConnectEvent.observe(viewModelScope) { resetParams() }
+        socketRepository.equipmentSocketConnectEvent.observe(viewModelScope) { resetParams() }
     }
 
     private fun handleEquipmentUpdate(equipState: EquipState) {

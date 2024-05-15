@@ -1,16 +1,16 @@
 package com.example.bachelordegreeproject.data.remote.repository.auth
 
 import com.example.bachelordegreeproject.core.network.ktor.RflotHttpService
+import com.example.bachelordegreeproject.core.util.constants.Result
 import com.example.bachelordegreeproject.data.local.repository.SessionRepository
 import com.example.bachelordegreeproject.data.remote.mappers.AuthPersonMapper
+import com.example.bachelordegreeproject.data.remote.mappers.AuthPlaneMapper
 import com.example.bachelordegreeproject.data.remote.request.AuthByLoginRequestModel
+import com.example.bachelordegreeproject.data.remote.request.AuthByRfidRequestModel
 import com.example.bachelordegreeproject.data.remote.request.StartSessionRequestModel
 import com.example.bachelordegreeproject.domain.models.AuthPerson
-import com.example.bachelordegreeproject.domain.models.Session
-import com.example.bachelordegreeproject.core.util.constants.Result
-import com.example.bachelordegreeproject.data.remote.mappers.AuthPlaneMapper
-import com.example.bachelordegreeproject.data.remote.request.AuthByRfidRequestModel
 import com.example.bachelordegreeproject.domain.models.AuthPlane
+import com.example.bachelordegreeproject.domain.models.Session
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(

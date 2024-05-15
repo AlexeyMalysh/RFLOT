@@ -54,7 +54,7 @@ class RflotHttpClient @Inject constructor(
             install(DefaultRequest) {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
                 url {
-                    protocol = URLProtocol.HTTPS
+                    protocol = URLProtocol.HTTP
                     host = baseUrl
                 }
             }

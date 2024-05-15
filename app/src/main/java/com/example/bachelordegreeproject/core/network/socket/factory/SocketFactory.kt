@@ -22,14 +22,13 @@ interface SocketFactory {
                     extraHeaders = mapOf("App-token" to listOf(token))
                 }
                 return IO.socket(uri, options)
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 Timber.e(e.message)
             }
             return null
         }
     }
-
-    class Client : Base() {
+    class Hostess : Base() {
         override fun create(uri: String, token: String, socketPathLocation: String): Socket? {
             return createSocket(
                 uri = uri,
