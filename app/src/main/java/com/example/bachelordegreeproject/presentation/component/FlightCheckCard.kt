@@ -25,10 +25,11 @@ fun FlightCheckCard(
     type: CheckType,
     selectedType: CheckType?,
     onClickedInfo: (CheckType?) -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
     ) {

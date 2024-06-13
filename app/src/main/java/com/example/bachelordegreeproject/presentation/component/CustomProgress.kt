@@ -17,10 +17,10 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.bachelordegreeproject.R
 
 @Composable
-fun CustomProgress() {
+fun CustomProgress(modifier: Modifier = Modifier) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.progress_animation))
     Box(
-        modifier = Modifier
+        modifier = modifier
             .zIndex(1f)
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.5f)),

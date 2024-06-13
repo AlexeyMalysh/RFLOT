@@ -138,7 +138,6 @@ class RflotHttpServiceImpl @Inject constructor(
             }
         }
 
-    // TODO
     override suspend fun closeSession(params: StartSessionRequestModel): Result<Unit> =
         withContext(coroutineDispatcher) {
             return@withContext try {

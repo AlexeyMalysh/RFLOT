@@ -22,8 +22,8 @@ class SocketRepository @Inject constructor(
     private val coroutineScope: CoroutineScope
 ) {
     private var isSubscribed = false
-    private var isPickerSocketConnectBroken = false
-    private val equipmentUpdateSocketFlow = MultipleEventFlow<EquipStateResponseModel>()
+    var isPickerSocketConnectBroken = false
+    val equipmentUpdateSocketFlow = MultipleEventFlow<EquipStateResponseModel>()
     val equipmentSocketConnectEvent = MultipleEventFlow<Unit>()
     val equipmentUpdateEvent = MultipleEventFlow<EquipState>()
 
@@ -55,10 +55,10 @@ class SocketRepository @Inject constructor(
             .launchIn(coroutineScope)
     }
 
-    private fun onEquipmentUpdate(equipment: EquipStateResponseModel) {
+    fun onEquipmentUpdate(equipment: EquipStateResponseModel) {
         equipmentUpdateSocketFlow.tryEmit(equipment)
     }
-    private fun onSocketConnect() {
+    fun onSocketConnect() {
         if (isPickerSocketConnectBroken) {
             isPickerSocketConnectBroken = false
             equipmentSocketConnectEvent.tryEmit(Unit)

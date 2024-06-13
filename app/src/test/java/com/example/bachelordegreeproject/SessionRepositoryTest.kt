@@ -43,8 +43,8 @@ class SessionRepositoryTest {
     }
     @Test
     fun `getSession should return session from database`() = runBlocking {
-        val sessionEntity = SessionEntity(0, "token", "userId", "planeId")
-        val session = Session("token", "userId", "planeId")
+        val sessionEntity = SessionEntity(0, "token", "userId", "planeId", "zoneId")
+        val session = Session("token", "userId", "planeId", "zoneId")
         `when`(sessionDao.getSession()).thenReturn(sessionEntity)
         `when`(sessionEntityMapper.map(sessionEntity)).thenReturn(session)
         val result = sessionRepository.getSession()
@@ -52,8 +52,8 @@ class SessionRepositoryTest {
     }
     @Test
     fun `setSession should save session to database`() = runBlocking {
-        val session = Session("token", "userId", "planeId")
-        val sessionEntity = SessionEntity(0, "token", "userId", "planeId")
+        val session = Session("token", "userId", "planeId", "zoneId")
+        val sessionEntity = SessionEntity(0, "token", "userId", "planeId", "zoneId")
         `when`(sessionEntityMapper.reverse(session)).thenReturn(sessionEntity)
         sessionRepository.setSession(session)
         verify(sessionDao).setSession(sessionEntity)
@@ -69,7 +69,7 @@ class SessionRepositoryTest {
     fun `sessionState should emit new value when session changes`() = runBlocking {
         val observer = mock(Observer::class.java) as Observer<Session?>
         sessionRepository.sessionState.observeForever(observer)
-        val session = Session("token", "userId", "planeId")
+        val session = Session("token", "userId", "planeId", "zoneId")
         sessionRepository.setSession(session)
         verify(observer).onChanged(session)
     }

@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.example.bachelordegreeproject.domain.models.EquipState
 
 @Composable
-fun SeatItem(equip: EquipState) {
+fun SeatItem(equip: EquipState, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(8.dp)
             .size(50.dp)
             .background(colorResource(equip.status.color), shape = RoundedCornerShape(4.dp)),

@@ -66,14 +66,11 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended-android:1.6.3")
     implementation("androidx.wear.compose:compose-material:1.3.0")
     implementation("androidx.graphics:graphics-shapes-android:1.0.0-alpha05")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.5")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.5")
 
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
@@ -100,18 +97,22 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     //Util
-    implementation ("com.airbnb.android:lottie-compose:6.1.0")
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     //Room
-    implementation ("androidx.room:room-runtime:2.6.1")
-    implementation( "androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
 
     //Test
     testImplementation("org.mockito:mockito-core:4.0.0")
-    testImplementation ("org.mockito:mockito-inline:2.13.0")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1-Beta")
-    androidTestImplementation ("androidx.arch.core:core-testing:2.1.0")
-    testImplementation ("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("org.mockito:mockito-inline:2.13.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1-Beta")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("io.mockk:mockk:1.13.11")
+    androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
 }
